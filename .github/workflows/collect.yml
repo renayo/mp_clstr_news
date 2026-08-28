@@ -15,7 +15,7 @@ on:
         required: false
 
 permissions:
-  contents: write
+  contents: write       # the collector commits manifests and derived tables; nothing else is granted
 
 concurrency:
   group: collect
@@ -49,14 +49,29 @@ jobs:
           python -m mpclstr.collect --date "$DATE" || echo "collector reported an incomplete day"
           python -m mpclstr.derive
 
-      - name: Archive the day's raw responses
+      # Workflow artifacts of a public repository can be downloaded by anyone with a GitHub
+      # account, and the raw responses contain text that is not cleared for publication
+      # (PREREGISTRATION.md §11). They are therefore encrypted before upload; without the
+      # passphrase secret, nothing is uploaded.
+      - name: Encrypt the day's raw responses (needs RAW_ARCHIVE_PASSPHRASE)
+        env:
+          RAW_ARCHIVE_PASSPHRASE: ${{ secrets.RAW_ARCHIVE_PASSPHRASE }}
+        run: |
+          if [ -n "$RAW_ARCHIVE_PASSPHRASE" ]; then
+            tar czf - raw | openssl enc -aes-256-cbc -pbkdf2 -iter 200000 -salt \
+              -pass env:RAW_ARCHIVE_PASSPHRASE -out "raw-$(date -u +%F).tar.gz.enc"
+            ls -l raw-*.tar.gz.enc
+          else
+            echo "RAW_ARCHIVE_PASSPHRASE not set; raw responses are not uploaded as an artifact"
+          fi
+
+      - name: Keep the encrypted archive as a workflow artifact (90 days)
         uses: actions/upload-artifact@v4
         with:
           name: raw-${{ github.run_id }}
-          path: |
-            raw/**
+          path: raw-*.tar.gz.enc
           retention-days: 90
-          if-no-files-found: warn
+          if-no-files-found: ignore
 
       - name: Copy raw responses to object storage (optional; set RAW_S3_BUCKET, AWS_* secrets)
         env:
