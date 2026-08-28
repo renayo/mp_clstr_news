@@ -43,3 +43,14 @@ def test_registered_constants(cfg):
             + b["budget"]["searches_per_day"] + b["reserve"]) <= b["budget"]["requests_per_day"]
     lc = b["layer_c"]
     assert lc["n_cohorts"] == lc["days"] and 225 + lc["spare_searches"] == b["budget"]["searches_per_day"]
+
+
+def test_registered_data_fallback(tmp_path, names):
+    # a root without its own data/ folder resolves to the package's registered files
+    assert C.verified_names(tmp_path) == names
+    assert len(C.unnamed_pool(tmp_path)) == 1211
+    assert C.data_path("body_names.csv", tmp_path) == C.ROOT / "data" / "body_names.csv"
+    # a root with its own copy takes precedence
+    (tmp_path / "data").mkdir()
+    (tmp_path / "data" / "body_names.csv").write_text("index,name,verified\n0,Tyson,1\n1,Drake,0\n")
+    assert C.verified_names(tmp_path) == ["Tyson"]

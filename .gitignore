@@ -10,6 +10,10 @@ classified/clusters_text.csv
 raw/*
 !raw/.gitkeep
 
+# cached bulk table from the SBDB query API (regenerable, ~25 MB)
+data/sbdb_named_asteroids.csv
+data/mpc_named_asteroids.csv
+
 # working files
 __pycache__/
 *.pyc
@@ -19,3 +23,6 @@ build/
 dist/
 .DS_Store
 results/*.npz
+
+# local virtual environment
+.venv/

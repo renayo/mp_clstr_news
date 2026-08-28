@@ -49,19 +49,29 @@ def day_index(cfg: dict[str, Any], date: dt.date) -> int:
     return (date - start).days + 1
 
 
+def data_path(name: str, root: Path | str | None = None) -> Path:
+    """A registered data file: the copy under ``root/data`` if one exists there, otherwise the
+    package's own copy. Lets any ``--root`` (a mock run, a scratch directory) work without
+    duplicating the registered inputs."""
+    if root is not None:
+        cand = Path(root) / "data" / name
+        if cand.exists():
+            return cand
+    return ROOT / "data" / name
+
+
 def verified_names(root: Path | str | None = None) -> list[str]:
     """The analysis set: names with verified == 1, in registered file order."""
-    p = Path(root or ROOT) / "data" / "body_names.csv"
-    df = pd.read_csv(p)
+    df = pd.read_csv(data_path("body_names.csv", root))
     return df.loc[df["verified"] == 1, "name"].tolist()
 
 
 def all_names(root: Path | str | None = None) -> pd.DataFrame:
-    return pd.read_csv(Path(root or ROOT) / "data" / "body_names.csv")
+    return pd.read_csv(data_path("body_names.csv", root))
 
 
 def unnamed_pool(root: Path | str | None = None) -> list[str]:
-    p = Path(root or ROOT) / "data" / "unnamed_pool.txt"
+    p = data_path("unnamed_pool.txt", root)
     return [ln.strip() for ln in p.read_text(encoding="utf-8").splitlines() if ln.strip()]
 
 

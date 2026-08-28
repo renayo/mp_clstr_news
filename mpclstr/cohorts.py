@@ -36,8 +36,7 @@ def cohort_for_date(cfg: dict, date: dt.date, n_cohorts: int | None = None) -> i
 
 
 def load_or_build(cfg: dict, root: Path | None = None) -> pd.DataFrame:
-    root = Path(root or C.ROOT)
-    p = root / "data" / "search_cohorts.csv"
+    p = C.data_path("search_cohorts.csv", root)
     if p.exists():
         return pd.read_csv(p)
     df = make_cohorts(C.verified_names(root), cfg["seeds"]["cohorts"],

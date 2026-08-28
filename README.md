@@ -73,10 +73,11 @@ file inside the repository.
 ## Data handling
 
 Raw responses are archived verbatim under `raw/` (about 50 MB a day). They are not
-committed: the workflow keeps each day's raw files as a workflow artifact and, when the
-`RAW_S3_BUCKET` secret is set, syncs them to S3-compatible object storage; monthly, the
-archive is deposited on Zenodo as a checksummed record referenced from `manifests/`
-(§4.7). The repository commits the manifests (SHA-256 of every raw file, hash-chained),
+committed: the workflow keeps each day's raw files as an AES-256-encrypted workflow
+artifact (passphrase in the `RAW_ARCHIVE_PASSPHRASE` secret; artifacts of a public
+repository are otherwise downloadable by anyone) and, when the `RAW_S3_BUCKET` secret is
+set, syncs them to S3-compatible object storage; monthly, the archive is deposited on
+Zenodo as a checksummed record referenced from `manifests/` (§4.7). The repository commits the manifests (SHA-256 of every raw file, hash-chained),
 the derived tables, and the metadata of matched clusters. The text of matched clusters is
 written to `classified/clusters_text.csv`, git-ignored until CLSTR's written permission to
 publish it is on file (§11).
