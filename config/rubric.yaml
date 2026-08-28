@@ -1,0 +1,60 @@
+# Classification rubric — the exact text the classifier sees (PREREGISTRATION.md, Appendix C).
+# The SHA-256 of this file is the "prompt hash" recorded at freeze. Do not edit after freeze.
+
+preamble: >-
+  You will read the title and summary of one news event. Classify the event on the axis
+  described below. Answer with exactly one label from the list. Judge the event itself as
+  described, not the source or the writing style.
+
+axes:
+  polarity:
+    labels: [positive, negative, neutral]
+    instruction: >-
+      Positive: the event is good news for the people principally affected — gains, recoveries,
+      achievements, rescues, agreements, awards, cures, reconciliations. Negative: the event is
+      bad news for them — harm, loss, death, injury, conflict, crime, failure, disaster, scandal,
+      decline. Neutral: announcements, routine proceedings, scheduling, mixed outcomes, or events
+      with no clear beneficiary or victim.
+  element:
+    labels: [space, air, fire, water, earth]
+    instruction: >-
+      Space: the abstract, the vast, and the cosmic — astronomy and space exploration, religion
+      and philosophy, mathematics and theory, music and sound, emptiness, openings, vacancies, and
+      things that transcend material form. Air: motion and communication — transport, aviation,
+      wind and weather, migration and travel, logistics, media, telecommunications, information
+      networks, language, debate, and the exchange of ideas. Fire: energy and force — war,
+      weapons, violence, explosions, wildfire, heat, light, power generation, leadership and
+      ambition, sport and competition, anger, and transformation by force. Water: fluids,
+      feeling, and care — oceans, rivers, rain, floods and drought, shipping, health and medicine,
+      emotion, family and relationships, nurturing, fertility, food and drink, compassion, and
+      grief. Earth: matter and resources — money, markets, business, property, agriculture,
+      mining, construction, infrastructure, land, manufacturing, material goods, and the body as a
+      physical object.
+  gender:
+    labels: [male, female, not_applicable]
+    instruction: >-
+      Male: the principal human subject of the event — the person the event is chiefly about — is
+      a man or boy. Female: the principal human subject is a woman or girl. Not applicable: there
+      is no principal human subject, the principal subjects are a mixed or unspecified group, or
+      the subject is an organisation, place, thing, or abstraction.
+  yinyang:
+    labels: [yin, yang]
+    instruction: >-
+      Yang: the event's predominant character is active, outward, assertive, initiating,
+      expanding, public, bright, hot, competitive, or forceful. Yin: the event's predominant
+      character is receptive, inward, yielding, sustaining, contracting, private, dark, cool,
+      cooperative, protective, or enduring. Choose the character that better describes what is
+      happening, even if both are present.
+  modality:
+    labels: [cardinal, fixed, mutable]
+    instruction: >-
+      Cardinal: something is initiated — a launch, a start, a decision taken, an outbreak, a first
+      move, an opening, a crisis erupting, a new leadership or direction. Fixed: something persists
+      or is held — entrenchment, resistance to change, a stalemate, consolidation, endurance,
+      maintenance, accumulation, a standing condition continuing. Mutable: something changes form
+      or passes — transition, adaptation, negotiation, dispersal, fluctuation, an ending or
+      hand-over, learning, reassessment, or an unsettled and shifting state.
+
+# Label words as they are presented to the model (the "not_applicable" label is spelled out).
+label_text:
+  not_applicable: "not applicable"

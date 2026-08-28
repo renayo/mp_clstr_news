@@ -1,0 +1,21 @@
+# credentials and local configuration — never committed
+.env
+*.key
+config/local*.yaml
+
+# matched-cluster text: git-ignored until CLSTR's written permission to publish is on file (PREREGISTRATION.md §11)
+classified/clusters_text.csv
+
+# raw API responses live in object storage / Zenodo, hashed in manifests/ (PREREGISTRATION.md §4.7)
+raw/*
+!raw/.gitkeep
+
+# working files
+__pycache__/
+*.pyc
+.pytest_cache/
+*.egg-info/
+build/
+dist/
+.DS_Store
+results/*.npz

@@ -1,0 +1,125 @@
+# Registered parameters of the second study, in machine-readable form.
+# Every value here is stated in PREREGISTRATION.md; the code reads this file
+# and nothing else for study parameters. Changing a value after freeze is a
+# protocol change and must be recorded in the changelog.
+
+study:
+  name: mp_clstr_news
+  registration_version: "0.2"
+  window_start: "2026-09-16"        # first confirmatory pull date (UTC)
+  window_end: "2031-09-15"          # last confirmatory pull date (UTC), inclusive
+  window_days: 1826
+  pull_time_utc: "12:00"            # daily pull; window is [12:00 UTC t-1, 12:00 UTC t)
+  ephemeris_epoch_utc: "00:00"      # midpoint of the news window
+  interim_days: [290, 365, 731, 1096, 1461]
+  pilot_days: 14
+
+seeds:
+  cohorts: 20260916                 # seeded permutation for the five search cohorts
+  monte_carlo: 42                   # primary Monte Carlo seed (as in predecessor studies)
+  stability: [1, 2, 3]              # additional seeds reported as a stability check
+
+monte_carlo:
+  n_replicates: 5000
+
+api:
+  base_url: "https://api.clstr.news/v1"
+  version: "v1"
+  tier: "builder"
+  budget:
+    requests_per_day: 5000
+    requests_per_minute: 60
+    searches_per_day: 250
+  layer_a:                          # daily census of situations
+    limit: 50
+    days: 1
+    sorts: ["relevance", "recent"]
+    category: "all"
+    country: "all"
+    max_pages: 81
+  layer_b:                          # cluster timelines of every census situation
+    timeline_limit: 25
+    max_pages_per_situation: 4
+    budget: 4300
+  layer_c:                          # cohort search
+    days: 5
+    limit: 30
+    n_cohorts: 5
+    second_page_threshold: 27       # confirmed matches on a page that trigger a second page
+    spare_searches: 25
+  reserve: 288
+  retries: 3
+
+completeness:
+  max_incomplete_fraction: 0.05
+  timeline_coverage_min: 0.98
+  backfill_days: 30
+
+aspects:                            # name, exact angle, harmonic index, ACF lag, class
+  - {name: conjunction, angle: 0.0,               harmonic: 1,  acf_lag: null, class: unclassified}
+  - {name: semisextile, angle: 30.0,              harmonic: 12, acf_lag: 30,   class: harmonious}
+  - {name: octile,      angle: 45.0,              harmonic: 8,  acf_lag: 45,   class: challenging}
+  - {name: septile,     angle: 51.42857142857143, harmonic: 7,  acf_lag: 51,   class: unclassified}
+  - {name: sextile,     angle: 60.0,              harmonic: 6,  acf_lag: 60,   class: harmonious}
+  - {name: quintile,    angle: 72.0,              harmonic: 5,  acf_lag: 72,   class: harmonious}
+  - {name: square,      angle: 90.0,              harmonic: 4,  acf_lag: 90,   class: challenging}
+  - {name: trine,       angle: 120.0,             harmonic: 3,  acf_lag: 120,  class: harmonious}
+  - {name: opposition,  angle: 180.0,             harmonic: 2,  acf_lag: 180,  class: challenging}
+
+harmonics: [1, 2, 3, 4, 5, 6, 7, 8, 12]
+acf_lags: [30, 45, 51, 60, 72, 90, 120, 180]
+acf_lag_septile_sensitivity: 52
+harmonious_harmonics: [12, 6, 5, 3]
+challenging_harmonics: [8, 4, 2]
+
+reference_points:                   # order is the reporting order; `independent` counts toward multiplicity
+  - {name: FPOA,    horizons: null,  kind: fixed,  independent: true,  element: null,  gender: null,    benefic: null, group: equinoctial}
+  - {name: Sun,     horizons: "10",  kind: major,  independent: true,  element: fire,  gender: male,    benefic: null, group: luminary}
+  - {name: Moon,    horizons: "301", kind: major,  independent: true,  element: water, gender: female,  benefic: null, group: luminary}
+  - {name: Mercury, horizons: "199", kind: major,  independent: true,  element: earth, gender: neuter,  benefic: null, group: mercury}
+  - {name: Venus,   horizons: "299", kind: major,  independent: true,  element: water, gender: female,  benefic: true, group: benefic}
+  - {name: Mars,    horizons: "499", kind: major,  independent: true,  element: fire,  gender: male,    benefic: false, group: malefic}
+  - {name: Jupiter, horizons: "599", kind: major,  independent: true,  element: space, gender: male,    benefic: true, group: benefic}
+  - {name: Saturn,  horizons: "699", kind: major,  independent: true,  element: air,   gender: neuter,  benefic: false, group: malefic}
+  - {name: Uranus,  horizons: "799", kind: major,  independent: true,  element: null,  gender: null,    benefic: null, group: outer}
+  - {name: Neptune, horizons: "899", kind: major,  independent: true,  element: null,  gender: null,    benefic: null, group: outer}
+  - {name: Pluto,   horizons: "999", kind: major,  independent: true,  element: null,  gender: null,    benefic: null, group: outer}
+  - {name: Rahu,    horizons: null,  kind: node,   independent: true,  element: null,  gender: null,    benefic: null, group: node}   # exploratory convention: air
+  - {name: Ketu,    horizons: null,  kind: node,   independent: false, element: null,  gender: null,    benefic: null, group: node}   # exploratory convention: fire; derived from Rahu
+
+signs:
+  frame: tropical                   # primary; sidereal (Lahiri) is a sensitivity alternative
+  ayanamsa_lahiri_midwindow_deg: 24.3
+  yang_centre_deg: 15.0             # sixth-harmonic phase of the yang (odd) sign centres
+  modality_centres_deg: {cardinal: 15.0, fixed: 45.0, mutable: 75.0}     # fourth harmonic
+  element_centres_deg: {fire: 15.0, earth: 45.0, air: 75.0, water: 105.0} # third harmonic (exploratory)
+
+classification:
+  axes:
+    polarity: [positive, negative, neutral]
+    element:  [space, air, fire, water, earth]
+    gender:   [male, female, not_applicable]
+    yinyang:  [yin, yang]
+    modality: [cardinal, fixed, mutable]
+  rubric_file: "config/rubric.yaml"
+  candidates:
+    llm: ["Qwen/Qwen2.5-7B-Instruct", "meta-llama/Llama-3.1-8B-Instruct", "google/gemma-2-9b-it"]
+    nli: ["facebook/bart-large-mnli"]
+    polarity_only: ["cardiffnlp/twitter-roberta-base-sentiment-latest"]
+  chosen: null                      # set at freeze: {backend, model, revision, prompt_hash}
+  calibration_items: 300
+  kappa_min: 0.4
+  hardware_check_items: 1000
+
+inference:
+  alpha_h1: 0.05
+  alpha_h2: 0.0041666667            # 0.05 / 12 independent reference points
+  alpha_h3: 0.05
+  alpha_block2: 0.01                # 0.05 / 5 quality hypotheses
+  exploratory_fdr_q: 0.10
+  require_both_nulls: true
+
+robustness:
+  short_name_max_chars: 3
+  top_presence_exclude: 12
+  epoch_alt_utc: "12:00"
