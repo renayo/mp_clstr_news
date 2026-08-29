@@ -74,6 +74,7 @@ jobs:
           if-no-files-found: ignore
 
       - name: Copy raw responses to object storage (optional; set RAW_S3_BUCKET, AWS_* secrets)
+        continue-on-error: true
         env:
           RAW_S3_BUCKET: ${{ secrets.RAW_S3_BUCKET }}
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
