@@ -2,8 +2,8 @@ name: daily-collect
 
 # Runs the registered daily pull at 12:00 UTC (PREREGISTRATION.md §4). The API key
 # lives only in the repository secret CLSTR_API_KEY. The workflow commits the day's
-# manifest, census pages, matched-cluster metadata and derived tables, and stores the
-# complete raw archive of the day as a workflow artifact for transfer to object storage.
+# manifest, derived tables and matched-cluster metadata, keeps the raw archive as an
+# encrypted artifact, and syncs it to object storage when RAW_S3_BUCKET is set.
 
 on:
   schedule:
@@ -24,7 +24,7 @@ concurrency:
 jobs:
   collect:
     runs-on: ubuntu-latest
-    timeout-minutes: 300
+    timeout-minutes: 330          # the collector stops itself after its registered time budget (200 min)
     steps:
       - uses: actions/checkout@v4
         with:
@@ -40,20 +40,26 @@ jobs:
           pip install -r requirements.txt
 
       - name: Collect
+        timeout-minutes: 240      # backstop; the collector's own budget ends the day first
         env:
           CLSTR_API_KEY: ${{ secrets.CLSTR_API_KEY }}
+          PYTHONUNBUFFERED: "1"
         run: |
           DATE="${{ github.event.inputs.date }}"
           if [ -z "$DATE" ]; then DATE=$(date -u +%F); fi
           echo "pull date $DATE"
           python -m mpclstr.collect --date "$DATE" || echo "collector reported an incomplete day"
-          python -m mpclstr.derive
+
+      - name: Derive outcome tables
+        if: always()
+        run: python -m mpclstr.derive
 
       # Workflow artifacts of a public repository can be downloaded by anyone with a GitHub
       # account, and the raw responses contain text that is not cleared for publication
       # (PREREGISTRATION.md §11). They are therefore encrypted before upload; without the
       # passphrase secret, nothing is uploaded.
       - name: Encrypt the day's raw responses (needs RAW_ARCHIVE_PASSPHRASE)
+        if: always()
         env:
           RAW_ARCHIVE_PASSPHRASE: ${{ secrets.RAW_ARCHIVE_PASSPHRASE }}
         run: |
@@ -66,6 +72,7 @@ jobs:
           fi
 
       - name: Keep the encrypted archive as a workflow artifact (90 days)
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: raw-${{ github.run_id }}
@@ -74,6 +81,7 @@ jobs:
           if-no-files-found: ignore
 
       - name: Copy raw responses to object storage (optional; set RAW_S3_BUCKET, AWS_* secrets)
+        if: always()
         env:
           RAW_S3_BUCKET: ${{ secrets.RAW_S3_BUCKET }}
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
@@ -88,6 +96,7 @@ jobs:
           fi
 
       - name: Commit manifests and derived tables
+        if: always()
         run: |
           git config user.name "mp-clstr-collector"
           git config user.email "collector@users.noreply.github.com"
@@ -95,4 +104,5 @@ jobs:
           # raw/ is archived outside the repository (PREREGISTRATION.md §4.7).
           git add manifests derived
           git commit -m "collect $(date -u +%F)" || echo "nothing to commit"
+          git pull --rebase
           git push
