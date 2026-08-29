@@ -1,0 +1,63 @@
+name: ephemeris
+
+# Builds the registered ephemeris tables (PREREGISTRATION.md §6) on a GitHub runner:
+# names -> numbers via the JPL SBDB bulk table, then daily longitudes from JPL Horizons.
+# Manual trigger only. Resumable: whatever the build produced is committed even if a step
+# fails, and the next run continues from the committed tables. Runs of the two epochs
+# must not overlap with each other or with a local build of the same output folder.
+
+on:
+  workflow_dispatch:
+    inputs:
+      epoch:
+        description: "Ephemeris epoch, HH:MM UTC (registered: 00:00; sensitivity variant: 12:00)"
+        required: false
+        default: "00:00"
+      out:
+        description: "Output folder (registered: data/ephemeris; noon variant: data/ephemeris_noon)"
+        required: false
+        default: "data/ephemeris"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: ephemeris
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 350
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Resolve names (keeps rows already resolved)
+        run: python -m mpclstr.ephemeris resolve
+
+      - name: Build longitudes (resumes from committed tables)
+        run: python -m mpclstr.ephemeris build --epoch "${{ github.event.inputs.epoch }}" --out "${{ github.event.inputs.out }}"
+
+      - name: Check
+        if: always()
+        continue-on-error: true
+        run: python -m mpclstr.ephemeris check --out "${{ github.event.inputs.out }}"
+
+      - name: Commit tables (also on failure, so a re-run resumes)
+        if: always()
+        run: |
+          git config user.name "mp-clstr-ephemeris"
+          git config user.email "ephemeris@users.noreply.github.com"
+          git add data/body_ids.csv "${{ github.event.inputs.out }}" 2>/dev/null || true
+          git commit -m "ephemeris: ${{ github.event.inputs.out }} epoch ${{ github.event.inputs.epoch }} (run ${{ github.run_id }})" || echo "nothing to commit"
+          git pull --rebase
+          git push
