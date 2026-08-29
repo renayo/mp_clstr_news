@@ -96,3 +96,116 @@ def test_budget_caps_timelines(tmp_path, cfg, names):
     res = run_day(client, small, d, root, matcher)
     assert res.quality["layer_b"]["situations_fetched"] == 10
     assert not res.complete                                  # coverage 10/30 < 0.98
+
+
+def test_parallel_timelines_match_sequential_and_hide_latency(tmp_path, cfg, names):
+    """Five workers behind one pacer: same archive as one worker, in a fraction of the wall time."""
+    import copy, time
+    from mpclstr.collect import Budget, DayResult, layer_a, layer_b
+    d = dt.date.fromisoformat(cfg["study"]["window_start"])
+    _, wend = window_for(cfg, d)
+    out = {}
+    for workers in (1, 5):
+        root = _root(tmp_path / f"w{workers}")
+        c = copy.deepcopy(cfg)
+        c["api"]["parallel_timelines"] = workers
+        client = MockClstrClient(names, pull_time=wend, n_situations=100, clusters_per_situation=3,
+                                 mention_rate=0.5, seed=3, latency_s=0.02)
+        res = DayResult(date=d.isoformat())
+        b = c["api"]["budget"]
+        budget = Budget(b["requests_per_day"], b["searches_per_day"], c["api"]["layer_b"]["budget"], c["api"]["reserve"])
+        layer_a(client, c, d, root, res, budget)
+        t0 = time.monotonic()
+        layer_b(client, c, d, root, res, budget)
+        elapsed = time.monotonic() - t0
+        ids = set()
+        for rec in (json.loads(l) for l in (root / "raw" / "timelines" / f"{d}.jsonl").read_text().splitlines()):
+            for cl in rec["body"].get("timeline", []):
+                ids.add(cl["id"])
+        out[workers] = (res.quality["layer_b"], elapsed, client.n_attempts, ids)
+    (q1, t1, n1, ids1), (q5, t5, n5, ids5) = out[1], out[5]
+    assert q1["coverage"] == 1.0 and q5["coverage"] == 1.0
+    assert n1 == n5 and q1["clusters_in_window"] == q5["clusters_in_window"] and q1["pages"] == q5["pages"]
+    assert ids1 == ids5                                         # identical archive content
+    assert t5 < t1 * 0.5                                        # 100 × 20 ms sequential vs 5 in flight
+
+
+def test_time_budget_writes_incomplete_day(tmp_path, cfg, names):
+    import copy
+    root = _root(tmp_path)
+    matcher = NameMatcher(names)
+    d = dt.date.fromisoformat(cfg["study"]["window_start"])
+    _, wend = window_for(cfg, d)
+    c = copy.deepcopy(cfg)
+    c["api"]["time_budget_minutes"] = 0.02          # ~1.2 s
+    client = MockClstrClient(names, pull_time=wend, n_situations=200, clusters_per_situation=2, seed=2,
+                             latency_s=0.02)
+    res = run_day(client, c, d, root, matcher)
+    assert not res.complete
+    assert res.quality["stop_reason"] == "time budget exhausted"
+    assert (root / "manifests" / f"{d}.json").exists()      # the day is still written out
+    m = json.loads((root / "manifests" / f"{d}.json").read_text())
+    assert m["complete"] is False and m["quality"]["stop_reason"] == "time budget exhausted"
+
+
+def test_daily_cap_stops_cleanly(tmp_path, cfg, names):
+    from mpclstr.clstr_client import DailyCapExceeded
+    root = _root(tmp_path)
+    matcher = NameMatcher(names)
+    d = dt.date.fromisoformat(cfg["study"]["window_start"])
+    _, wend = window_for(cfg, d)
+    client = MockClstrClient(names, pull_time=wend, n_situations=30, clusters_per_situation=2, seed=4)
+    real = client.situation
+    calls = {"n": 0}
+
+    def capped(*a, **k):
+        calls["n"] += 1
+        if calls["n"] > 5:
+            raise DailyCapExceeded("HTTP 429 with Retry-After 86400s")
+        return real(*a, **k)
+    client.situation = capped
+    res = run_day(client, cfg, d, root, matcher)
+    assert not res.complete
+    assert res.quality["stop_reason"].startswith("daily cap")
+    assert res.quality["layer_c"]["searched"] == 0             # nothing more is requested after the cap
+    assert calls["n"] <= 5 + cfg["api"]["parallel_timelines"] * 2   # in-flight workers may finish, no more
+
+
+def test_client_pacing_is_global_across_threads():
+    """With a fake clock, N threads issuing requests through one client never exceed the allowance."""
+    import threading
+    from mpclstr.clstr_client import ClstrClient
+
+    class FakeResp:
+        status_code = 200
+        headers = {}
+        text = ""
+        def json(self): return {"data": [], "next_cursor": None}
+
+    class FakeSession:
+        headers = {}
+        def get(self, url, params=None, timeout=None): return FakeResp()
+
+    t = {"now": 0.0}
+    lock = threading.Lock()
+
+    def clock(): return t["now"]
+
+    def sleep(s):
+        with lock:
+            t["now"] += s
+
+    client = ClstrClient("k", requests_per_minute=60, session=FakeSession(), sleep=sleep, clock=clock, safety=1.0)
+    starts = []
+
+    def worker():
+        for _ in range(20):
+            client.get("situations", {"limit": 1})
+            with lock:
+                starts.append(t["now"])
+    threads = [threading.Thread(target=worker) for _ in range(5)]
+    for th in threads: th.start()
+    for th in threads: th.join()
+    assert client.n_attempts == 100
+    # 100 requests at 60/min need at least 99 s of fake time between the first and the last start
+    assert max(starts) - min(starts) >= 99.0 - 1e-6

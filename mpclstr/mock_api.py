@@ -10,6 +10,8 @@ from __future__ import annotations
 import datetime as dt
 import hashlib
 import json
+import threading
+import time
 from typing import Any
 
 import numpy as np
@@ -30,7 +32,7 @@ class MockClstrClient:
 
     def __init__(self, names: list[str], *, pull_time: dt.datetime, n_situations: int = 120,
                  clusters_per_situation: int = 6, mention_rate: float = 0.25, seed: int = 0,
-                 page_size_cap: int = 50):
+                 page_size_cap: int = 50, latency_s: float = 0.0):
         self.names = list(names)
         self.pull_time = pull_time
         self.n_situations = n_situations
@@ -39,7 +41,11 @@ class MockClstrClient:
         self.rng = np.random.default_rng(seed)
         self.n_attempts = 0
         self.n_searches = 0
+        self.n_rate_limited = 0
+        self.slept_s = 0.0
         self.page_size_cap = page_size_cap
+        self.latency_s = latency_s
+        self._lock = threading.Lock()
         self._build()
 
     # ------------------------------------------------------------ synthetic data
@@ -86,9 +92,12 @@ class MockClstrClient:
 
     # ---------------------------------------------------------------- endpoints
     def _rec(self, path: str, params: dict[str, Any], body: Any, is_search: bool = False) -> RequestRecord:
-        self.n_attempts += 1
-        if is_search:
-            self.n_searches += 1
+        if self.latency_s:
+            time.sleep(self.latency_s)
+        with self._lock:
+            self.n_attempts += 1
+            if is_search:
+                self.n_searches += 1
         return RequestRecord(path, {k: v for k, v in params.items() if v is not None}, 200,
                              dt.datetime.now(dt.timezone.utc).isoformat(timespec="seconds"), 5, 1, body)
 

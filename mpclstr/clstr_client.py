@@ -13,15 +13,27 @@ against the daily search cap, exactly as the provider counts them.
 from __future__ import annotations
 
 import datetime as dt
+import threading
 import time
 from dataclasses import dataclass, field
 from typing import Any, Callable
 
 import requests
 
+MAX_RETRY_AFTER = 120.0        # seconds; a larger Retry-After means a daily cap, not a burst
+DAILY_CAP_HINT = 600.0         # a Retry-After above this is treated as "come back tomorrow"
+
 
 class ClstrError(RuntimeError):
     pass
+
+
+class RateLimited(ClstrError):
+    """429 persisted through every retry."""
+
+
+class DailyCapExceeded(ClstrError):
+    """The service asked us to wait longer than a burst limit would; stop for the day."""
 
 
 @dataclass
@@ -57,9 +69,13 @@ class ClstrClient:
     session: Any = None
     sleep: Callable[[float], None] = time.sleep
     clock: Callable[[], float] = time.monotonic
+    safety: float = 0.92           # use this fraction of the per-minute allowance
     n_attempts: int = field(default=0, init=False)
     n_searches: int = field(default=0, init=False)
+    n_rate_limited: int = field(default=0, init=False)
+    slept_s: float = field(default=0.0, init=False)
     _last_start: float = field(default=-1e9, init=False)
+    _lock: threading.Lock = field(default_factory=threading.Lock, init=False, repr=False)
 
     def __post_init__(self) -> None:
         if self.session is None:
@@ -70,12 +86,27 @@ class ClstrClient:
 
     # ------------------------------------------------------------------ core
     def _pace(self) -> None:
-        min_gap = 60.0 / float(self.requests_per_minute)
-        now = self.clock()
-        wait = self._last_start + min_gap - now
+        """Global token spacing: safe to call from several threads; throughput is bounded by the
+        per-minute allowance, never by the latency of any one request."""
+        min_gap = 60.0 / (float(self.requests_per_minute) * self.safety)
+        with self._lock:
+            now = self.clock()
+            wait = self._last_start + min_gap - now
+            start = max(now, self._last_start + min_gap)
+            self._last_start = start
         if wait > 0:
             self.sleep(wait)
-        self._last_start = self.clock()
+
+    def _count(self, is_search: bool) -> None:
+        with self._lock:
+            self.n_attempts += 1
+            if is_search:
+                self.n_searches += 1
+
+    def _backoff(self, seconds: float) -> None:
+        with self._lock:
+            self.slept_s += seconds
+        self.sleep(seconds)
 
     def get(self, path: str, params: dict[str, Any] | None = None, *, is_search: bool = False) -> RequestRecord:
         params = {k: v for k, v in (params or {}).items() if v is not None}
@@ -83,16 +114,14 @@ class ClstrClient:
         last_exc: Exception | None = None
         for attempt in range(1, self.retries + 2):
             self._pace()
-            self.n_attempts += 1
-            if is_search:
-                self.n_searches += 1
+            self._count(is_search)
             t0 = self.clock()
             requested_at = dt.datetime.now(dt.timezone.utc).isoformat(timespec="seconds")
             try:
                 resp = self.session.get(url, params=params, timeout=self.timeout)
             except requests.RequestException as exc:  # network problem: retry
                 last_exc = exc
-                self.sleep(min(60.0, 2.0 ** attempt))
+                self._backoff(min(60.0, 2.0 ** attempt))
                 continue
             elapsed_ms = int((self.clock() - t0) * 1000)
             if resp.status_code == 200:
@@ -107,11 +136,18 @@ class ClstrClient:
                     delay = float(retry_after) if retry_after else min(60.0, 2.0 ** attempt)
                 except ValueError:
                     delay = min(60.0, 2.0 ** attempt)
+                if resp.status_code == 429:
+                    with self._lock:
+                        self.n_rate_limited += 1
+                    if delay > DAILY_CAP_HINT:
+                        raise DailyCapExceeded(f"HTTP 429 from {path} with Retry-After {delay:.0f}s")
                 last_exc = ClstrError(f"HTTP {resp.status_code} from {path}")
-                self.sleep(delay)
+                self._backoff(min(delay, MAX_RETRY_AFTER))
                 continue
             # 4xx other than 429: do not retry
             raise ClstrError(f"HTTP {resp.status_code} from {path}: {resp.text[:200]}")
+        if isinstance(last_exc, ClstrError) and "429" in str(last_exc):
+            raise RateLimited(f"gave up on {path} after {self.retries + 1} attempts: {last_exc}")
         raise ClstrError(f"gave up on {path} after {self.retries + 1} attempts: {last_exc}")
 
     # ------------------------------------------------------------- endpoints

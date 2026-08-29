@@ -49,6 +49,8 @@ api:
     spare_searches: 25
   reserve: 288
   retries: 3
+  parallel_timelines: 5             # concurrent timeline fetches; throughput stays bounded by requests_per_minute
+  time_budget_minutes: 200          # after this the day is written out as incomplete rather than lost
 
 completeness:
   max_incomplete_fraction: 0.05
