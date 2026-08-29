@@ -27,15 +27,15 @@ manifests/              daily SHA-256 manifests, hash-chained
 derived/                outcome tables regenerated from raw/ by mpclstr.derive
 classified/             per-cluster label probabilities
 results/                summary JSON and null draws of each analysis run
-.github/workflows/      daily collector and the test workflow
+.github/workflows/      daily collector, ephemeris build (manual), and the test workflow
 ```
 
 ## Pipeline
 
 | Step | Command | Registered section |
 |---|---|---|
-| Resolve names to numbers | `python -m mpclstr.ephemeris resolve` | §6 |
-| Build the ephemeris | `python -m mpclstr.ephemeris build` | §6 |
+| Resolve names to numbers | `python -m mpclstr.ephemeris resolve` (or the `ephemeris` workflow) | §6 |
+| Build the ephemeris | `python -m mpclstr.ephemeris build`, then `… check` (or the `ephemeris` workflow) | §6 |
 | Make the search cohorts | `python -m mpclstr.cohorts` | §4.4 |
 | Collect one day | `CLSTR_API_KEY=… python -m mpclstr.collect --date 2026-09-16` | §4.2–4.4, §4.7 |
 | Derive outcome tables | `python -m mpclstr.derive` | §4.6 |
