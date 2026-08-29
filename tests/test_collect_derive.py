@@ -209,3 +209,36 @@ def test_client_pacing_is_global_across_threads():
     assert client.n_attempts == 100
     # 100 requests at 60/min need at least 99 s of fake time between the first and the last start
     assert max(starts) - min(starts) >= 99.0 - 1e-6
+
+
+def test_derive_is_incremental_when_raw_files_are_absent(tmp_path, cfg, names):
+    """A fresh checkout holding only today's raw files must keep yesterday's derived rows."""
+    import shutil as sh
+    root = _root(tmp_path)
+    matcher = NameMatcher(names)
+    d1 = dt.date.fromisoformat(cfg["study"]["window_start"])
+    d2 = d1 + dt.timedelta(days=1)
+    for d in (d1, d2):
+        _, wend = window_for(cfg, d)
+        client = MockClstrClient(names, pull_time=wend, n_situations=30, clusters_per_situation=3,
+                                 mention_rate=0.6, seed=int(d.strftime("%Y%m%d")))
+        run_day(client, cfg, d, root, matcher)
+        frames = derive(root, cfg, names, matcher)
+        (root / "derived").mkdir(exist_ok=True)
+        for k in ("N", "A", "S", "N_sit", "E", "E_plus"):
+            frames[k].to_csv(root / "derived" / f"{k}.csv")
+        frames["matched_clusters"].to_csv(root / "derived" / "matched_clusters.csv", index=False)
+        (root / "classified").mkdir(exist_ok=True)
+        frames["clusters_text"].to_csv(root / "classified" / "clusters_text.csv", index=False)
+    full = derive(root, cfg, names, matcher)
+    day1_row = full["N"].loc[d1.isoformat()].copy()
+    day1_clusters = set(full["matched_clusters"].query("date == @d1.isoformat()")["cluster_id"])
+    assert day1_row.sum() > 0 and day1_clusters
+    # simulate the next day's fresh checkout: raw files of day 1 are gone, manifests and derived tables remain
+    for f in list((root / "raw").rglob(f"{d1}*")):
+        f.unlink()
+    again = derive(root, cfg, names, matcher)
+    assert again["complete"].loc[d1.isoformat(), "raw_in_checkout"] == False  # noqa: E712
+    assert (again["N"].loc[d1.isoformat()] == day1_row).all()                   # carried, not zeroed
+    assert set(again["matched_clusters"].query("date == @d1.isoformat()")["cluster_id"]) == day1_clusters
+    assert (again["N"].loc[d2.isoformat()] == full["N"].loc[d2.isoformat()]).all()   # recomputed day unchanged

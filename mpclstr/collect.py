@@ -439,11 +439,22 @@ def main(argv: list[str] | None = None) -> int:
                     help="pull date (UTC), default today")
     ap.add_argument("--root", default=str(C.ROOT), help="repository root (raw/, manifests/ live here)")
     ap.add_argument("--mock", action="store_true", help="use the synthetic API (no network, no key)")
+    ap.add_argument("--force", action="store_true", help="run even if this date already has a complete manifest")
     args = ap.parse_args(argv)
 
     cfg = C.load_config()
     root = Path(args.root)
     date = dt.date.fromisoformat(args.date)
+    existing = root / "manifests" / f"{date.isoformat()}.json"
+    if existing.exists() and not args.force:
+        try:
+            prev = json.loads(existing.read_text(encoding="utf-8"))
+        except ValueError:
+            prev = {}
+        if prev.get("complete"):
+            print(f"{date} already has a complete manifest; the daily request allowance is per UTC day and a second "
+                  f"run would exhaust it. Use --force to run anyway.")
+            return 0
     names = C.verified_names(root)
     matcher = NameMatcher(names)
     if args.mock:
