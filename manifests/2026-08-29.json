@@ -1,0 +1,61 @@
+{
+ "date": "2026-08-29",
+ "created_at": "2026-08-29T15:31:41+00:00",
+ "registration_version": "0.2",
+ "complete": false,
+ "files": {
+  "raw/situations/2026-08-29_relevance.jsonl": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "raw/situations/2026-08-29_recent.jsonl": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "raw/timelines/2026-08-29.jsonl": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "raw/search/2026-08-29.jsonl": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+ },
+ "prev_manifest": null,
+ "prev_manifest_sha256": null,
+ "quality": {
+  "layer_a": {
+   "pages": {
+    "relevance": 0,
+    "recent": 0
+   },
+   "situations": {
+    "relevance": 0,
+    "recent": 0
+   },
+   "ok": {
+    "relevance": false,
+    "recent": true
+   },
+   "errors": [
+    "A/relevance: HTTP 429 from situations with Retry-After 30499s"
+   ],
+   "census_size": 0
+  },
+  "layer_b": {
+   "situations_fetched": 0,
+   "census_size": 0,
+   "coverage": 1.0,
+   "pages": 0,
+   "clusters_in_window": 0,
+   "workers": 5,
+   "errors": [],
+   "n_errors": 0
+  },
+  "cohort": 2,
+  "layer_c": {
+   "cohort_size": 224,
+   "searched": 0,
+   "second_pages": 0,
+   "truncated": [],
+   "errors": [],
+   "n_errors": 0
+  },
+  "stop_reason": "daily cap: HTTP 429 from situations with Retry-After 30499s",
+  "elapsed_seconds": 0.5,
+  "requests": {
+   "attempts": 1,
+   "searches": 0,
+   "rate_limited_429": 1,
+   "backoff_seconds": 0.0
+  }
+ }
+}
