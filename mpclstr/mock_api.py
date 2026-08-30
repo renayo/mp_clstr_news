@@ -16,7 +16,7 @@ from typing import Any
 
 import numpy as np
 
-from .clstr_client import RequestRecord
+from .clstr_client import NotFound, RequestRecord
 
 _CATEGORIES = ["politics", "business", "technology", "health", "sports", "culture", "international", "crime"]
 _WORDS = ("summit talks trade court election storm rescue launch strike merger vaccine flood "
@@ -41,8 +41,11 @@ class MockClstrClient:
         self.rng = np.random.default_rng(seed)
         self.n_attempts = 0
         self.n_searches = 0
+        self.n_search_ok = 0
         self.n_rate_limited = 0
         self.slept_s = 0.0
+        self.errors_by_status: dict[str, int] = {}
+        self.quota: dict[str, str] = {}
         self.page_size_cap = page_size_cap
         self.latency_s = latency_s
         self._lock = threading.Lock()
@@ -98,6 +101,7 @@ class MockClstrClient:
             self.n_attempts += 1
             if is_search:
                 self.n_searches += 1
+                self.n_search_ok += 1
         return RequestRecord(path, {k: v for k, v in params.items() if v is not None}, 200,
                              dt.datetime.now(dt.timezone.utc).isoformat(timespec="seconds"), 5, 1, body)
 
@@ -112,6 +116,10 @@ class MockClstrClient:
                                         "country": country, "cursor": cursor}, body)
 
     def situation(self, situation_id, *, timeline_limit, timeline_before=None) -> RequestRecord:
+        if situation_id not in self.timelines:
+            with self._lock:
+                self.n_attempts += 1
+            raise NotFound(f"HTTP 404 from situations/{situation_id}", status=404, path=f"situations/{situation_id}")
         tl = self.timelines[situation_id]
         start = 0
         if timeline_before:
@@ -119,12 +127,18 @@ class MockClstrClient:
             start = ids.index(timeline_before) + 1
         page = tl[start:start + timeline_limit]
         sit = next(s for s in self.situations if s["id"] == situation_id)
-        body = dict(sit)
-        body["summary"] = sit["summary_preview"]
-        body["timeline"] = page
-        body["next_timeline_before"] = page[-1]["id"] if start + timeline_limit < len(tl) and page else None
+        body_sit = dict(sit)
+        body_sit["summary"] = sit["summary_preview"]
+        body_sit["timeline"] = page
+        has_more = start + timeline_limit < len(tl)
+        body_sit["timeline_cursor"] = {"has_more": has_more,
+                                       "next_before": page[-1]["id"] if has_more and page else None,
+                                       "remaining_count": max(0, len(tl) - start - timeline_limit),
+                                       "total_count": len(tl)}
+        body_sit["day_span"] = 3
         return self._rec(f"situations/{situation_id}",
-                         {"timeline_limit": timeline_limit, "timeline_before": timeline_before}, body)
+                         {"timeline_limit": timeline_limit, "timeline_before": timeline_before},
+                         {"data": body_sit})
 
     def search(self, q, *, days, limit, cursor=None) -> RequestRecord:
         cutoff = self.pull_time - dt.timedelta(days=days)

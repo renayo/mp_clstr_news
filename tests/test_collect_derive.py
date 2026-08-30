@@ -120,7 +120,7 @@ def test_parallel_timelines_match_sequential_and_hide_latency(tmp_path, cfg, nam
         elapsed = time.monotonic() - t0
         ids = set()
         for rec in (json.loads(l) for l in (root / "raw" / "timelines" / f"{d}.jsonl").read_text().splitlines()):
-            for cl in rec["body"].get("timeline", []):
+            for cl in rec["body"]["data"].get("timeline", []):
                 ids.add(cl["id"])
         out[workers] = (res.quality["layer_b"], elapsed, client.n_attempts, ids)
     (q1, t1, n1, ids1), (q5, t5, n5, ids5) = out[1], out[5]
@@ -130,22 +130,42 @@ def test_parallel_timelines_match_sequential_and_hide_latency(tmp_path, cfg, nam
     assert t5 < t1 * 0.5                                        # 100 × 20 ms sequential vs 5 in flight
 
 
-def test_time_budget_writes_incomplete_day(tmp_path, cfg, names):
+def test_time_budget_in_layer_b_writes_incomplete_day(tmp_path, cfg, names):
     import copy
     root = _root(tmp_path)
     matcher = NameMatcher(names)
     d = dt.date.fromisoformat(cfg["study"]["window_start"])
     _, wend = window_for(cfg, d)
     c = copy.deepcopy(cfg)
-    c["api"]["time_budget_minutes"] = 0.02          # ~1.2 s
+    c["api"]["time_budget_minutes"] = 0.005         # ~0.3 s: the clock runs out inside Layer B
     client = MockClstrClient(names, pull_time=wend, n_situations=200, clusters_per_situation=2, seed=2,
                              latency_s=0.02)
     res = run_day(client, c, d, root, matcher)
     assert not res.complete
-    assert res.quality["stop_reason"] == "time budget exhausted"
+    assert res.quality["stop_reason"] == "time_budget_exhausted"
     assert (root / "manifests" / f"{d}.json").exists()      # the day is still written out
     m = json.loads((root / "manifests" / f"{d}.json").read_text())
-    assert m["complete"] is False and m["quality"]["stop_reason"] == "time budget exhausted"
+    assert m["complete"] is False and m["stop_reason"] == "time_budget_exhausted"
+
+
+def test_time_budget_in_layer_c_keeps_day_complete(tmp_path, cfg, names):
+    """§4.7: Layer C never enters the completeness test; names cut off by the clock become back-fill."""
+    import copy
+    root = _root(tmp_path)
+    matcher = NameMatcher(names)
+    d = dt.date.fromisoformat(cfg["study"]["window_start"])
+    _, wend = window_for(cfg, d)
+    c = copy.deepcopy(cfg)
+    c["api"]["time_budget_minutes"] = 0.01          # ~0.6 s: A and B fit, the clock runs out inside C
+    client = MockClstrClient(names, pull_time=wend, n_situations=20, clusters_per_situation=2, seed=2,
+                             latency_s=0.02)
+    res = run_day(client, c, d, root, matcher)
+    qc = res.quality["layer_c"]
+    assert res.quality["layer_b"]["coverage"] == 1.0
+    assert res.complete and res.quality["stop_reason"] is None
+    assert res.quality["halted"] == "time_budget_exhausted"
+    assert qc["searched"] < qc["cohort_size"]
+    assert len(qc["missing"]) == qc["cohort_size"] - qc["searched"]   # queued for back-fill
 
 
 def test_daily_cap_stops_cleanly(tmp_path, cfg, names):
@@ -166,7 +186,7 @@ def test_daily_cap_stops_cleanly(tmp_path, cfg, names):
     client.situation = capped
     res = run_day(client, cfg, d, root, matcher)
     assert not res.complete
-    assert res.quality["stop_reason"].startswith("daily cap")
+    assert res.quality["stop_reason"] == "request_budget_exhausted"
     assert res.quality["layer_c"]["searched"] == 0             # nothing more is requested after the cap
     assert calls["n"] <= 5 + cfg["api"]["parallel_timelines"] * 2   # in-flight workers may finish, no more
 

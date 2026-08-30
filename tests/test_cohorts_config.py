@@ -42,7 +42,14 @@ def test_registered_constants(cfg):
     assert (b["layer_a"]["max_pages"] * len(b["layer_a"]["sorts"]) + b["layer_b"]["budget"]
             + b["budget"]["searches_per_day"] + b["reserve"]) <= b["budget"]["requests_per_day"]
     lc = b["layer_c"]
-    assert lc["n_cohorts"] == lc["days"] and 225 + lc["spare_searches"] == b["budget"]["searches_per_day"]
+    # the search ledger (§4.1): the largest cohort, its second pages and the back-fill reserve fill the cap exactly
+    assert lc["n_cohorts"] == lc["days"]
+    largest_cohort = -(-1122 // lc["n_cohorts"])
+    assert largest_cohort + lc["second_pages_max"] + lc["backfill_reserve"] == b["budget"]["searches_per_day"]
+    comp = cfg["completeness"]
+    assert comp["timeline_failure_allowance_min"] >= 1 and 0 < comp["timeline_failure_allowance_fraction"] < 1
+    assert comp["require_clusters_in_window"] is True
+    assert cfg["study"]["registration_version"] == "0.3"
 
 
 def test_registered_data_fallback(tmp_path, names):

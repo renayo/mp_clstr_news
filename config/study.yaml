@@ -5,7 +5,7 @@
 
 study:
   name: mp_clstr_news
-  registration_version: "0.2"
+  registration_version: "0.3"
   window_start: "2026-09-16"        # first confirmatory pull date (UTC)
   window_end: "2031-09-15"          # last confirmatory pull date (UTC), inclusive
   window_days: 1826
@@ -41,20 +41,26 @@ api:
     timeline_limit: 25
     max_pages_per_situation: 4
     budget: 4300
-  layer_c:                          # cohort search
-    days: 5
-    limit: 30
-    n_cohorts: 5
+  layer_c:                          # cohort search; the search ledger (§4.1) is spent in this priority order:
+    days: 5                         #   1. back-fill of names missed on earlier days (≤ backfill_reserve)
+    limit: 30                       #   2. the first page for every name in today's cohort
+    n_cohorts: 5                    #   3. second pages under the truncation rule (≤ second_pages_max)
     second_page_threshold: 27       # confirmed matches on a page that trigger a second page
-    spare_searches: 25
+    second_pages_max: 15
+    backfill_reserve: 10            # 225 + 15 + 10 = 250 successful searches on a full day
   reserve: 288
-  retries: 3
+  retries: 3                        # attempts after the first on 429 and 5xx; other 4xx are never retried (§4.6a)
+  second_pass: true                 # one more attempt at every 5xx give-up at the end of the run (§4.6a)
+  archive_errors: true              # every non-200 attempt is archived under raw/errors/ (§4.7)
   parallel_timelines: 5             # concurrent timeline fetches; throughput stays bounded by requests_per_minute
+  parallel_searches: 5              # concurrent searches; a Retry-After no longer stalls the whole layer
   time_budget_minutes: 200          # after this the day is written out as incomplete rather than lost
 
 completeness:
   max_incomplete_fraction: 0.05
-  timeline_coverage_min: 0.98
+  timeline_failure_allowance_min: 3         # k: unfetched eligible situations tolerated per day (provisional; fixed at freeze from the pilot)
+  timeline_failure_allowance_fraction: 0.02 # allowance = max(k, ceil(fraction × N_eligible)); retired situations are not eligible
+  require_clusters_in_window: true          # §4.3a: a day with fetched timelines and no cluster in the window is incomplete
   backfill_days: 30
 
 aspects:                            # name, exact angle, harmonic index, ACF lag, class

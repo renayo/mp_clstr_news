@@ -27,7 +27,7 @@ import numpy as np
 import pandas as pd
 
 from . import config as C
-from .collect import parse_ts, window_for
+from .collect import cluster_time, parse_ts, window_for
 from .matching import NameMatcher
 
 LABEL_SHORT = {"positive": "pos", "negative": "neg", "neutral": "neu", "not_applicable": "na"}
@@ -99,7 +99,7 @@ def window_clusters(root: Path, cfg: dict[str, Any], date: dt.date) -> dict[str,
         clusters, _ = extract_timeline(rec.get("body"))
         for c in clusters:
             cid = c.get("id")
-            ts = parse_ts(c.get("published_at"))
+            ts = cluster_time(c)
             if not cid or ts is None or not (wstart <= ts < wend):
                 continue
             if cid not in out:
@@ -155,12 +155,20 @@ def derive(root: Path, cfg: dict[str, Any], names: list[str], matcher: NameMatch
 
     for ti, (date, man) in enumerate(dates):
         q = man.get("quality", {})
+        qb, qc = q.get("layer_b", {}) or {}, q.get("layer_c", {}) or {}
         complete_rows.append({"date": date.isoformat(), "complete": bool(man.get("complete")),
+                              "stop_reason": man.get("stop_reason", q.get("stop_reason")),
+                              "registration_version": man.get("registration_version"),
                               "census_size": q.get("layer_a", {}).get("census_size"),
-                              "timeline_coverage": q.get("layer_b", {}).get("coverage"),
-                              "clusters_in_window": q.get("layer_b", {}).get("clusters_in_window"),
-                              "searched": q.get("layer_c", {}).get("searched"),
-                              "truncated": len(q.get("layer_c", {}).get("truncated", []) or []),
+                              "n_eligible": qb.get("n_eligible", qb.get("census_size")),
+                              "retired": len(qb.get("retired", []) or []),
+                              "unfetched": qb.get("unfetched"),
+                              "timeline_coverage": qb.get("coverage"),
+                              "clusters_in_window": qb.get("clusters_in_window"),
+                              "searched": qc.get("searched"),
+                              "missing": len(qc.get("missing", []) or []),
+                              "backfilled": len((qc.get("backfill", {}) or {}).get("done", []) or []),
+                              "truncated": len(qc.get("truncated", []) or []),
                               "raw_in_checkout": raw_present[date]})
         if not raw_present[date]:
             continue
@@ -202,7 +210,7 @@ def derive(root: Path, cfg: dict[str, Any], names: list[str], matcher: NameMatch
             if name not in idx:
                 continue
             for c in (rec.get("body") or {}).get("data", []) or []:
-                ts = parse_ts(c.get("published_at"))
+                ts = cluster_time(c)
                 cid = c.get("id")
                 if ts is None or not cid:
                     continue

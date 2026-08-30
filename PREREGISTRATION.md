@@ -5,8 +5,8 @@
 | | |
 |---|---|
 | **Repository** | https://github.com/renayo/mp_clstr_news |
-| **Document** | `PREREGISTRATION.md`, version 0.2 (draft for freeze) |
-| **Date of this version** | 2026-08-28 |
+| **Document** | `PREREGISTRATION.md`, version 0.3 (draft for freeze) |
+| **Date of this version** | 2026-08-30 |
 | **Status** | Draft. To be frozen as version 1.0 before the first confirmatory observation. The frozen text is never edited in place; every later change is dated in the changelog (§13). |
 | **Principal investigator** | Renay Oshop |
 | **Predecessor studies** | Oshop & Coops (2026), *In daily news, minor planet names show up in accordance with harmonic patterning* — https://github.com/renayo/minor_planets_2026; and the single-axis audit of the FPOA–Libra axis — https://github.com/renayo/FPOA_Minor_Planets_2026, https://fpoa.netlify.app |
@@ -105,14 +105,27 @@ The unnamed-asteroid null (§7.5) uses the 1,211 numbered but unnamed main-belt 
 
 News presence is measured from CLSTR (https://clstr.news), which clusters articles from hundreds of sources into deduplicated, cross-referenced *situations*, each a timeline of member *clusters* (events), exposed through a documented, versioned REST API at `https://api.clstr.news/v1`. CLSTR states that v1 is stable — fields are only added, never renamed or removed within v1, and breaking changes receive a new version prefix with at least 90 days' notice. The API version, request parameters, and response schema are recorded with every pull.
 
-The study subscribes to the **Builder** tier: 5,000 requests per day, 60 per minute, 250 searches per day, 30-day history. The daily budget is allocated as follows and enforced by the collector; the allocation is part of the registration.
+The study subscribes to the **Builder** tier, which imposes three limits: 5,000 requests per day, 60 requests per minute, and 250 searches per day, with a 30-day history window (the widest `days` a request may ask for; larger values are clamped). The daily caps are metered on **distinct requests**: a retry of the same request on the same UTC day is not charged again (verified against the quota headers on 2026-08-30), so the ledgers below count distinct requests, retries are free, and the collector paces against the provider's `X-RateLimit-Remaining-Day` header wherever it has been seen rather than against its own attempt count. The per-minute limit reports no remaining count and is enforced at the edge; the collector spaces its requests globally below that allowance and honours `Retry-After` on any 429. The budget is registered as **two ledgers**, enforced by the collector; the allocation is part of the registration.
 
-| Layer | Endpoint | Requests per day | Purpose |
+**Request ledger — 5,000 distinct requests per day**
+
+| Layer | Endpoint | Ceiling | Purpose |
 |---|---|---|---|
-| A — census | `GET /situations` | ≤ 162 (81 pages × 2 sort orders) | The complete set of situations active in the trailing 24 h |
-| B — timelines | `GET /situations/{id}` | ≤ 4,300 | The member clusters (events) of every census situation, with text and timestamps |
-| C — search | `GET /search` | ≤ 250 (counts against the search cap) | Embedding-based retrieval for a fixed cohort of names |
-| Reserve | — | ≥ 288 | Retries and timeline continuation pages |
+| A — census | `GET /situations` | 162 (81 pages × 2 sort orders) | The complete set of situations active in the trailing 24 h |
+| B — timelines | `GET /situations/{id}` | 4,300 | The member clusters (events) of every census situation, with text and timestamps |
+| C — search | `GET /search` | 250 (the search ledger below) | Embedding-based retrieval for a fixed cohort of names |
+| Unallocated | — | ≥ 288 | Headroom; the ledger stops each layer before the cap |
+
+**Search ledger — 250 distinct searches per day**, spent in a strict priority order so that a constrained day degrades in a registered direction:
+
+| Priority | Purpose | Planned |
+|---:|---|---:|
+| 1 | Back-fill of names missed on earlier days (§4.7) | 10 |
+| 2 | The first page for every name in today's cohort | ≤ 225 |
+| 3 | Second pages under the §4.4 truncation rule | 15 |
+| | **Total** | **250** |
+
+A name with no successful response by the end of the run, its §4.6a end-of-run pass included, is logged `missing` in the day's quality log and enters the back-fill queue.
 
 ### 4.2 Layer A — daily census
 
@@ -124,9 +137,15 @@ For every situation in the census, in relevance order, the collector requests `G
 
 Cluster-level counting is the principal gain from the Builder tier. A situation can stay active for weeks, so counting a situation on every day it is updated would credit a long-running story to every day of its life and blur the timing that aspect tests depend on; a cluster is a dated event with its own text, significance score, and count of source articles, and is the direct analogue of the first study's daily article counts.
 
+### 4.3a Collection invariant
+
+Layer A selects situations active in the trailing 24 hours (`days = 1`). A situation so selected whose fetched timeline contains no cluster published inside the day's window is contradictory: either the window arithmetic or the timestamp handling is wrong. The collector therefore asserts, on any day where at least one timeline was fetched successfully, that the day's total `clusters_in_window` is at least 1; a day failing the assertion is marked incomplete with `stop_reason = zero_clusters_in_window`.
+
+This assertion tests pipeline integrity, not the value of any outcome variable. It is not a threshold on news volume: no day is excluded for yielding few clusters, only for yielding a count that Layer A's selection criterion makes impossible. The distinction is deliberate, since a completeness rule keyed to outcome magnitude would function as a post hoc exclusion and would bias the series toward high-news days.
+
 ### 4.4 Layer C — cohort search
 
-The `GET /search` endpoint performs an embedding-based (semantic) search and is the only endpoint that accepts a name. The 1,122 verified names are assigned once, by a seeded random permutation (seed `20260916`), to five cohorts of 225, 225, 224, 224, and 224 names, committed as `data/search_cohorts.csv` at freeze. On day *t* of the window (day 1 = the first confirmatory pull) the collector queries, for every name in cohort ((*t* − 1) mod 5), `GET /search` with `q = <name>`, `days = 5`, `limit = 30`. Because every name is searched every fifth day with a five-day window, the search layer covers every name on every day, and each result is assigned to a day by its `published_at`. The remaining 25 searches are spent, in cohort order, on a second page (`cursor`) for names whose first page consisted of 27 or more lexically confirmed matches, since such a page is likely truncated; a name-window whose final page is still 27 or more confirmed matches is flagged *truncated* and treated as missing in search-layer statistics. Every response is archived verbatim.
+The `GET /search` endpoint performs an embedding-based (semantic) search and is the only endpoint that accepts a name. The 1,122 verified names are assigned once, by a seeded random permutation (seed `20260916`), to five cohorts of 225, 225, 224, 224, and 224 names, committed as `data/search_cohorts.csv` at freeze. On day *t* of the window (day 1 = the first confirmatory pull) the collector queries, for every name in cohort ((*t* − 1) mod 5), `GET /search` with `q = <name>`, `days = 5`, `limit = 30`. Because every name is searched every fifth day with a five-day window, the search layer covers every name on every day, and each result is assigned to a day by its `published_at`. The `/search` page size is capped by the tier at 30 results — a larger `limit` is clamped, not rejected (verified 2026-08-30) — so a first page of 27 or more lexically confirmed matches is likely truncated. Up to 15 second pages (`cursor`) are spent on such names, in cohort order, within the search ledger of §4.1; a name-window whose final page is still 27 or more confirmed matches is flagged *truncated* and treated as missing in search-layer statistics. Every response is archived verbatim.
 
 Semantic retrieval returns the nearest items even when nothing mentions the name, and the response carries no similarity score. The pilot (§8) characterises this behaviour. Layer C serves three pre-registered purposes: its lexically confirmed subset measures the recall of Layers A and B; its unconfirmed remainder — items retrieved for a name that do not contain the name — is archived for exploratory analysis of semantic association; and, with a 30-day history, it allows back-filling of any missed day within 30 days.
 
@@ -152,13 +171,31 @@ For body *b* and day *t*, let *M_b*(*t*) be the set of distinct clusters publish
 
 H1–H3 use *N*; H4–H8 use the *N*^(q); *A* and *S* are pre-specified secondary outcomes reported with the same statistics.
 
+### 4.6a Error taxonomy
+
+Responses are handled by CLSTR's documented status classes. No class is retried except as named here; the collector's behaviour is exactly this table.
+
+| Status | Retry | Action |
+|---|---|---|
+| 200 | — | Archive and proceed. |
+| 400 `bad_request` | Never | Abort the run; `stop_reason = malformed_request`. A malformed request is a code defect, never a data condition. |
+| 401 `unauthorized` | Never | Abort the run; `stop_reason = unauthorized`. A revoked key must never present as a coverage shortfall. |
+| 404 `not_found` | Never | A `moved_to` is followed once, both responses archived and the id mapping recorded in the day's quality log; otherwise the situation is recorded as **retired**. |
+| 410 `gone` | Never | The situation is recorded as **retired**. |
+| 429 `rate_limited` | Conditional | A `Retry-After` of 600 s or less is a burst window: it is waited out and the request re-issued. Above that it is a daily cap: the affected ledger stops for the day and the request is never retried same-day. Which cap fired is read from the quota headers, then from the message. |
+| 500 / 502 / 503, network failure | Up to three retries | The server's numeric `Retry-After` is honoured, capped at 120 s; absent one, the schedule is 2, 4, 8, 16 s. A request that exhausts its retries is **deferred**. |
+
+After Layers A–C the collector makes one end-of-run pass over every deferred request. A request that fails the second pass is final for the day; a deferred search becomes `missing` and enters the back-fill queue of §4.7.
+
+A situation recorded as **retired** was present in the Layer A census and withdrawn by the source before Layer B reached it. It is not a collection failure: it leaves the coverage denominator of §4.7 and is listed by id in the day's quality log, so that the exclusion is auditable and the count of retirements is itself monitored for drift.
+
 ### 4.7 Archiving, integrity, drift monitoring, and missing data
 
-Every API response is stored unmodified as newline-delimited JSON with its request URL, parameters, HTTP status, and request timestamp, under `raw/situations/`, `raw/timelines/`, and `raw/search/` by date. A daily manifest records the SHA-256 of every raw file and the SHA-256 of the previous day's manifest, forming a hash chain; manifests are committed to the repository by the automated collector with the run's timestamp. The raw archive — roughly 50 MB a day, too large for a source repository over five years — is held in object storage and deposited monthly on Zenodo as a compressed, immutable, DOI-bearing record whose checksums appear in the repository manifests; the repository itself holds the manifests, the metadata of every matched cluster (identifier, situation, timestamp, significance, sources, category, matched names, link), the daily quality log, and all derived tables. Derived tables (`derived/N.csv`, `A.csv`, `S.csv`, one file per quality class, `N_sit.csv`, `E.csv`, one row per day and one column per name) are regenerated from the raw archive by a single script and never edited by hand.
+Every API response — every failed attempt included — is stored unmodified as newline-delimited JSON with its request URL, parameters, HTTP status, request timestamp, and the retained response headers (the `X-RateLimit-*` quota family, `Retry-After`, and the edge identification), under `raw/situations/`, `raw/timelines/`, and `raw/search/` by date; non-200 attempts are stored under `raw/errors/` by date, so that the archive can answer what failed and how, not only what succeeded. A daily manifest records the SHA-256 of every raw file and the SHA-256 of the previous day's manifest, forming a hash chain; manifests are committed to the repository by the automated collector with the run's timestamp. The raw archive — roughly 50 MB a day, too large for a source repository over five years — is held in object storage and deposited monthly on Zenodo as a compressed, immutable, DOI-bearing record whose checksums appear in the repository manifests; the repository itself holds the manifests, the metadata of every matched cluster (identifier, situation, timestamp, significance, sources, category, matched names, link), the daily quality log, and all derived tables. Derived tables (`derived/N.csv`, `A.csv`, `S.csv`, one file per quality class, `N_sit.csv`, `E.csv`, one row per day and one column per name) are regenerated from the raw archive by a single script and never edited by hand.
 
 A daily quality log records pages and situations per sort order, timelines fetched and their coverage fraction, clusters in window, the distribution of `significance_score`, names matched, searches issued and truncations, and a hash of the response schema. A change in the schema hash or a shift of the daily cluster count beyond three median absolute deviations from the trailing 60-day median triggers a review, recorded in the changelog; no review alters the analysis plan.
 
-A day is complete when both census orders were retrieved with HTTP 200 (after up to three retries), the final page of each carried no cursor or the 81-page ceiling was reached, and the timeline coverage fraction was at least 0.98. Incomplete days are excluded for all bodies from every confirmatory statistic. If more than 5% of days in the window are incomplete, the window is extended day-for-day until 1,826 complete days are obtained. Missed search cohorts are back-filled within 30 days using the same query with an enlarged `days` value and are flagged as back-filled.
+A day is complete when (a) both census orders were retrieved with HTTP 200 under the retry policy of §4.6a and the final page of each carried no cursor or the 81-page ceiling was reached; (b) the number of eligible census situations whose timelines were not fetched, after the end-of-run pass, does not exceed max(*k*, ⌈0.02 × *N*_eligible⌉), where *N*_eligible excludes situations recorded as retired under §4.6a and *k* = 3 provisionally, to be fixed at freeze from the pilot's measured baseline failure rate (a fixed coverage fraction collapses at a small census: at the observed pre-pilot census of 82, a 0.98 bar tolerated exactly one failure); and (c) the collection invariant of §4.3a held. Layer C does not enter the completeness test: searches missed on a complete day are recovered by back-fill and the day remains complete. Incomplete days are excluded for all bodies from every confirmatory statistic. If more than 5% of days in the window are incomplete, the window is extended day-for-day until 1,826 complete days are obtained. A name missed by Layer C is back-filled within 30 days by the same query with `days` enlarged to cover the missed day's search span, is flagged as back-filled in the quality log, and the back-fill queue is derived from the manifests alone, so that no state exists outside the audited record. The manifest carries a top-level `stop_reason`, null on a complete day and otherwise the first applicable of `malformed_request`, `unauthorized`, `operator_abort`, `request_budget_exhausted`, `time_budget_exhausted`, `layer_a_http_error`, `layer_a_cursor_unexhausted`, `coverage_below_threshold`, `zero_clusters_in_window`; the quality log carries per-layer `ok` flags, per-status error counts, retired and moved situation ids, missing and back-filled searches, the last-seen quota headers, and the collector's version and commit.
 
 ---
 
@@ -267,7 +304,8 @@ Everything not named above is exploratory: the full 360-direction V landscapes; 
 | Milestone | Proposed date | Content |
 |---|---|---|
 | Version 0.1 committed | 2026-08-28 | First draft (three-year window, Free tier). |
-| Version 0.2 committed | 2026-08-28 | This draft: Builder tier, five-year window, five classification axes, cluster-level outcome. |
+| Version 0.2 committed | 2026-08-28 | Builder tier, five-year window, five classification axes, cluster-level outcome. |
+| Version 0.3 committed | 2026-08-30 | This draft: error taxonomy, two ledgers, completeness allowance, collection invariant — prompted by the pre-pilot shakedown runs of 2026-08-29/30 (`PILOT_FINDINGS_2026-08-30.md`). Those runs precede the pilot, are marked incomplete under version 0.2, and are kept in the manifest chain with no standing in any analysis. |
 | Pilot | first 14 days of successful pulls (target 2026-09-01 to 2026-09-14) | Characterise census sizes, `days = 1` semantics, timeline coverage, name-match rates, `/search` behaviour and truncation; build the 300-cluster calibration set; choose the classifier; fix operational definitions. Pilot data are quarantined from every confirmatory analysis. |
 | Freeze, version 1.0 | by 2026-09-15 | Analysis code tagged; ephemeris, `body_ids.csv`, `search_cohorts.csv`, word list, classifier identity, and rubric hash committed; document time-stamped (§10); simulation-based power analysis added as an appendix. |
 | Confirmatory window | 2026-09-16 through 2031-09-15, inclusive | 1,826 complete days (five calendar years including 2028-02-29). |
@@ -326,7 +364,7 @@ The principal investigator is a practitioner and teacher of the tradition whose 
 
 ## 12. Decisions to be locked at freeze
 
-The daily pull time: 12:00 UTC is proposed. The runtime: an automated workflow in the public repository is proposed, with a scheduled job on a local machine as fallback; either records its own timestamps. The confirmatory start date: 2026-09-16, contingent on a completed pilot. The classifier: chosen by §5.3. The primary node: mean node. The object store and the Zenodo community for the raw archive. The publication of raw text: contingent on CLSTR's permission. The English word list for §7.7(c). Any axis demoted under §5.3.
+The daily pull time: 12:00 UTC is proposed. The runtime: an automated workflow in the public repository is proposed, with a scheduled job on a local machine as fallback; either records its own timestamps. The confirmatory start date: 2026-09-16, contingent on a completed pilot. The classifier: chosen by §5.3. The primary node: mean node. The object store and the Zenodo community for the raw archive. The publication of raw text: contingent on CLSTR's permission. The English word list for §7.7(c). Any axis demoted under §5.3. The failure allowance *k* of §4.7, from the pilot's measured baseline failure and retirement rates. Confirmation from the pilot that the caps meter distinct requests as observed on 2026-08-30, once a 429 has been seen with its quota headers.
 
 ---
 
@@ -336,12 +374,13 @@ The daily pull time: 12:00 UTC is proposed. The runtime: an automated workflow i
 |---|---|---|
 | 0.1 | 2026-08-28 | Initial draft committed for review before freeze (three-year window, Free tier, situation-level outcome, single valence score). |
 | 0.2 | 2026-08-28 | Builder tier adopted with a registered daily budget; census taken in two sort orders; cluster timelines fetched and the primary outcome moved to dated clusters; five-cohort search rotation covering every name every day; window extended to five years (1,826 days) with five interim reports; classification expanded to five axes with a fixed rubric, a pinned local classifier, human calibration, and a demotion rule; hypotheses H5–H8 added and H4 restated in harmonic form; Zenodo monthly deposits and a 5% missing-day rule added. |
+| 0.3 | 2026-08-30 | Error taxonomy added as §4.6a, aligning collector behaviour with CLSTR's published status classes: no retry of final 4xx, `moved_to` followed once, a *retired* category for 410 and un-redirected 404, daily-cap 429s stop the affected ledger, and an end-of-run second pass over 5xx give-ups. Every failed attempt and the response headers now archived (`raw/errors/`), after the pre-pilot outage left the 503s of 2026-08-30 uncharacterisable. Completeness restated as an absolute failure allowance max(*k*, ⌈0.02 × *N*_eligible⌉) over a denominator that excludes retired situations, the fixed 0.98 fraction having proved infeasible at the observed census of 82; the §4.3a collection invariant added as a completeness criterion after 49 fetched timelines yielded zero clusters in window (a timeline-envelope parsing defect, fixed and pinned by test against the live response shape). Daily budget restated as two ledgers with the metered unit made explicit (distinct requests; retries free — observed against the quota headers); Layer C given a priority order, a back-fill reserve of 10 derived from the manifests alone, second pages capped at 15, and the same worker pool as Layer B; `/search` page size confirmed clamped at 30, so the five-cohort rotation is retained. `stop_reason` enumerated; per-layer `ok` flags, error-class counts, retired/moved ids, and quota headers added to the quality log. Layer C removed from the completeness test (missed searches are back-filled). Prompted by the pre-pilot runs of 2026-08-29/30, recorded in `PILOT_FINDINGS_2026-08-30.md`. |
 
 ---
 
 ### Appendix A — Files this declaration refers to
 
-`config/study.yaml` (every registered parameter in machine-readable form; the reference points with their classical attributes and the aspect table live here), `config/rubric.yaml` (the classification rubric, Appendix C, whose SHA-256 is the prompt hash), `data/body_names.csv` (1,211 names with the `verified` flag), `data/unnamed_pool.txt` (1,211 unnamed designations), `data/search_cohorts.csv` (the five cohorts, seeded), `data/body_ids.csv` (name → number → SPK-ID, at freeze), `data/ephemeris/` (daily longitudes for the window, at freeze), `raw/` (verbatim API responses; in object storage and Zenodo, hashed in the manifests), `manifests/` (daily SHA-256 manifests, hash-chained), `derived/` (regenerated outcome tables and matched-cluster metadata), `classified/` (per-cluster label probabilities), the `mpclstr` package — `collect.py` (daily collector), `ephemeris.py`, `derive.py` (archive → outcome tables), `classify.py` (rubric prompts and pinned classifier), `stats.py` (estimators and nulls), `analysis.py` (the single confirmatory run), `synthetic.py` and `mock_api.py` (test doubles) — `tests/` (the suite that must pass at freeze), `results/` (summary JSON and null draws), and `PREREGISTRATION.sha256` with its `.ots` proof.
+`config/study.yaml` (every registered parameter in machine-readable form; the reference points with their classical attributes and the aspect table live here), `config/rubric.yaml` (the classification rubric, Appendix C, whose SHA-256 is the prompt hash), `data/body_names.csv` (1,211 names with the `verified` flag), `data/unnamed_pool.txt` (1,211 unnamed designations), `data/search_cohorts.csv` (the five cohorts, seeded), `data/body_ids.csv` (name → number → SPK-ID, at freeze), `data/ephemeris/` (daily longitudes for the window, at freeze), `raw/` (verbatim API responses, failed attempts under `raw/errors/`; in object storage and Zenodo, hashed in the manifests), `manifests/` (daily SHA-256 manifests, hash-chained), `derived/` (regenerated outcome tables and matched-cluster metadata), `classified/` (per-cluster label probabilities), the `mpclstr` package — `collect.py` (daily collector), `ephemeris.py`, `derive.py` (archive → outcome tables), `classify.py` (rubric prompts and pinned classifier), `stats.py` (estimators and nulls), `analysis.py` (the single confirmatory run), `synthetic.py` and `mock_api.py` (test doubles) — `tests/` (the suite that must pass at freeze), `results/` (summary JSON and null draws), and `PREREGISTRATION.sha256` with its `.ots` proof.
 
 ### Appendix B — Request parameters, verbatim
 
