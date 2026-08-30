@@ -1,0 +1,104 @@
+{
+ "date": "2026-08-30",
+ "created_at": "2026-08-30T14:11:20+00:00",
+ "registration_version": "0.2",
+ "complete": false,
+ "files": {
+  "raw/situations/2026-08-30_relevance.jsonl": "2f5ca313f9f2b6b45c5418185adb33cd5401ad5bbb9848a4ab93bdec1e9a650b",
+  "raw/situations/2026-08-30_recent.jsonl": "145775d1f34a4d276f3b8f24bd69d9717dc86b6f99f5177d8d797ecc6cc44bda",
+  "raw/timelines/2026-08-30.jsonl": "977de4f0db476e8781427e43549d8a2ea8e96394f8563401fa5ce3992b3b9e83",
+  "raw/search/2026-08-30.jsonl": "c319695b11585c8cbde32cdf7801533fef5b08a04fbb28af4630bc12550c0c74"
+ },
+ "prev_manifest": "2026-08-29.json",
+ "prev_manifest_sha256": "1122c15b063ef0cd14313bf062458d62eb6945a1d50e3e7f29894c23eb16796a",
+ "quality": {
+  "layer_a": {
+   "pages": {
+    "relevance": 2,
+    "recent": 2
+   },
+   "situations": {
+    "relevance": 82,
+    "recent": 82
+   },
+   "ok": {
+    "relevance": true,
+    "recent": true
+   },
+   "census_size": 82
+  },
+  "layer_b": {
+   "situations_fetched": 49,
+   "census_size": 82,
+   "coverage": 0.5975609756097561,
+   "pages": 49,
+   "clusters_in_window": 0,
+   "workers": 5,
+   "errors": [
+    "B/0c270b48-04e4-468f-b2d9-498086042971: gave up on situations/0c270b48-04e4-468f-b2d9-498086042971 after 4 attempts: HTTP 503 from situations/0c270b48-04e4-468f-b2d9-498086042971",
+    "B/ec74a74b-0f6d-47c3-9eb2-626d00f5493f: gave up on situations/ec74a74b-0f6d-47c3-9eb2-626d00f5493f after 4 attempts: HTTP 503 from situations/ec74a74b-0f6d-47c3-9eb2-626d00f5493f",
+    "B/afe54fd2-ed85-4f86-905d-9b072ee15202: gave up on situations/afe54fd2-ed85-4f86-905d-9b072ee15202 after 4 attempts: HTTP 503 from situations/afe54fd2-ed85-4f86-905d-9b072ee15202",
+    "B/1852ac5f-bdd5-4600-86e4-8d7bac7c8ba1: gave up on situations/1852ac5f-bdd5-4600-86e4-8d7bac7c8ba1 after 4 attempts: HTTP 503 from situations/1852ac5f-bdd5-4600-86e4-8d7bac7c8ba1",
+    "B/cea69dfd-90e8-4c66-bccb-5e330bce4f46: gave up on situations/cea69dfd-90e8-4c66-bccb-5e330bce4f46 after 4 attempts: HTTP 503 from situations/cea69dfd-90e8-4c66-bccb-5e330bce4f46",
+    "B/898bce62-497b-4888-a662-ed3aa7646e94: gave up on situations/898bce62-497b-4888-a662-ed3aa7646e94 after 4 attempts: HTTP 503 from situations/898bce62-497b-4888-a662-ed3aa7646e94",
+    "B/0bd5f20d-b6bc-4dd5-a6e1-bce5a34d7d78: gave up on situations/0bd5f20d-b6bc-4dd5-a6e1-bce5a34d7d78 after 4 attempts: HTTP 503 from situations/0bd5f20d-b6bc-4dd5-a6e1-bce5a34d7d78",
+    "B/0e16e3ad-aefa-41db-b954-966a748fb489: gave up on situations/0e16e3ad-aefa-41db-b954-966a748fb489 after 4 attempts: HTTP 503 from situations/0e16e3ad-aefa-41db-b954-966a748fb489",
+    "B/adb410d6-b063-44eb-a19d-0f2a832a9fe9: gave up on situations/adb410d6-b063-44eb-a19d-0f2a832a9fe9 after 4 attempts: HTTP 503 from situations/adb410d6-b063-44eb-a19d-0f2a832a9fe9",
+    "B/28ea47b3-c397-47d8-b546-292adcc3f2a0: gave up on situations/28ea47b3-c397-47d8-b546-292adcc3f2a0 after 4 attempts: HTTP 503 from situations/28ea47b3-c397-47d8-b546-292adcc3f2a0",
+    "B/39630211-946e-483b-b2d0-99207c2a86a7: gave up on situations/39630211-946e-483b-b2d0-99207c2a86a7 after 4 attempts: HTTP 503 from situations/39630211-946e-483b-b2d0-99207c2a86a7",
+    "B/26e0c3b8-f404-4b18-9d24-f699ad489a8c: gave up on situations/26e0c3b8-f404-4b18-9d24-f699ad489a8c after 4 attempts: HTTP 503 from situations/26e0c3b8-f404-4b18-9d24-f699ad489a8c",
+    "B/e4f66add-2b3c-4279-a1c5-4134e74e97c6: gave up on situations/e4f66add-2b3c-4279-a1c5-4134e74e97c6 after 4 attempts: HTTP 503 from situations/e4f66add-2b3c-4279-a1c5-4134e74e97c6",
+    "B/9426667f-efcc-4899-bc2d-d22c3b230b84: gave up on situations/9426667f-efcc-4899-bc2d-d22c3b230b84 after 4 attempts: HTTP 503 from situations/9426667f-efcc-4899-bc2d-d22c3b230b84",
+    "B/ae83e4bb-3cdc-41ed-893c-ab8135985a61: gave up on situations/ae83e4bb-3cdc-41ed-893c-ab8135985a61 after 4 attempts: HTTP 503 from situations/ae83e4bb-3cdc-41ed-893c-ab8135985a61",
+    "B/3f179e0e-bbad-49de-af81-beaabaeda9ba: gave up on situations/3f179e0e-bbad-49de-af81-beaabaeda9ba after 4 attempts: HTTP 503 from situations/3f179e0e-bbad-49de-af81-beaabaeda9ba",
+    "B/f93c120b-af1c-4d4b-b777-6c74af0b8eed: gave up on situations/f93c120b-af1c-4d4b-b777-6c74af0b8eed after 4 attempts: HTTP 503 from situations/f93c120b-af1c-4d4b-b777-6c74af0b8eed",
+    "B/d9b17092-3e97-4a2a-8c39-36b5210f5e03: gave up on situations/d9b17092-3e97-4a2a-8c39-36b5210f5e03 after 4 attempts: HTTP 503 from situations/d9b17092-3e97-4a2a-8c39-36b5210f5e03",
+    "B/978069b5-273d-4829-a4db-ce0f70e72eb5: gave up on situations/978069b5-273d-4829-a4db-ce0f70e72eb5 after 4 attempts: HTTP 503 from situations/978069b5-273d-4829-a4db-ce0f70e72eb5",
+    "B/6cf08a38-6fd6-4653-ac37-12c0e3916ddb: gave up on situations/6cf08a38-6fd6-4653-ac37-12c0e3916ddb after 4 attempts: HTTP 503 from situations/6cf08a38-6fd6-4653-ac37-12c0e3916ddb",
+    "B/f0038c87-6edd-4c9d-9fad-857f29cd7954: gave up on situations/f0038c87-6edd-4c9d-9fad-857f29cd7954 after 4 attempts: HTTP 503 from situations/f0038c87-6edd-4c9d-9fad-857f29cd7954",
+    "B/b0d660eb-7685-449c-ab3d-1335badfa35b: gave up on situations/b0d660eb-7685-449c-ab3d-1335badfa35b after 4 attempts: HTTP 503 from situations/b0d660eb-7685-449c-ab3d-1335badfa35b",
+    "B/da189d61-5b0b-49d0-9ab7-a95afc0d902d: gave up on situations/da189d61-5b0b-49d0-9ab7-a95afc0d902d after 4 attempts: HTTP 503 from situations/da189d61-5b0b-49d0-9ab7-a95afc0d902d",
+    "B/c5c2c150-98f0-4159-be0b-039e766b291d: gave up on situations/c5c2c150-98f0-4159-be0b-039e766b291d after 4 attempts: HTTP 503 from situations/c5c2c150-98f0-4159-be0b-039e766b291d",
+    "B/608c034f-d1ee-41d3-93cf-021dd2ef1f7d: gave up on situations/608c034f-d1ee-41d3-93cf-021dd2ef1f7d after 4 attempts: HTTP 503 from situations/608c034f-d1ee-41d3-93cf-021dd2ef1f7d",
+    "B/a3063ce0-5a9e-4a05-b3a0-5ca80772822b: gave up on situations/a3063ce0-5a9e-4a05-b3a0-5ca80772822b after 4 attempts: HTTP 503 from situations/a3063ce0-5a9e-4a05-b3a0-5ca80772822b",
+    "B/b5056727-e9f1-4c69-877c-9ea34b8c2f3c: gave up on situations/b5056727-e9f1-4c69-877c-9ea34b8c2f3c after 4 attempts: HTTP 503 from situations/b5056727-e9f1-4c69-877c-9ea34b8c2f3c",
+    "B/d2a0922d-2fd2-408c-af5f-91374c41e38c: gave up on situations/d2a0922d-2fd2-408c-af5f-91374c41e38c after 4 attempts: HTTP 503 from situations/d2a0922d-2fd2-408c-af5f-91374c41e38c",
+    "B/32e50e08-e9db-41a5-9efb-7ef18deb3aab: gave up on situations/32e50e08-e9db-41a5-9efb-7ef18deb3aab after 4 attempts: HTTP 503 from situations/32e50e08-e9db-41a5-9efb-7ef18deb3aab",
+    "B/f986ea0f-c555-4f54-9ad8-2e048892d05a: gave up on situations/f986ea0f-c555-4f54-9ad8-2e048892d05a after 4 attempts: HTTP 503 from situations/f986ea0f-c555-4f54-9ad8-2e048892d05a",
+    "B/67140bf9-c37c-4e40-a575-1cc092a82704: gave up on situations/67140bf9-c37c-4e40-a575-1cc092a82704 after 4 attempts: HTTP 503 from situations/67140bf9-c37c-4e40-a575-1cc092a82704",
+    "B/b8694876-74a1-4a68-90df-89fd74562be9: gave up on situations/b8694876-74a1-4a68-90df-89fd74562be9 after 4 attempts: HTTP 503 from situations/b8694876-74a1-4a68-90df-89fd74562be9",
+    "B/fc76ba8f-89e9-4c86-b75d-b6a5eec7c83c: gave up on situations/fc76ba8f-89e9-4c86-b75d-b6a5eec7c83c after 4 attempts: HTTP 503 from situations/fc76ba8f-89e9-4c86-b75d-b6a5eec7c83c"
+   ],
+   "n_errors": 33
+  },
+  "cohort": 3,
+  "layer_c": {
+   "cohort_size": 224,
+   "searched": 213,
+   "second_pages": 0,
+   "truncated": [],
+   "errors": [
+    "C/Emita: gave up on search after 4 attempts: HTTP 503 from search",
+    "C/George Alexander: gave up on search after 4 attempts: HTTP 503 from search",
+    "C/Rameau: gave up on search after 4 attempts: HTTP 503 from search",
+    "C/Jenniskens: gave up on search after 4 attempts: HTTP 503 from search",
+    "C/Gogol: gave up on search after 4 attempts: HTTP 503 from search",
+    "C/Alison Liu: gave up on search after 4 attempts: HTTP 503 from search",
+    "C/Haapavesi: gave up on search after 4 attempts: HTTP 503 from search",
+    "C/Mcdavid: gave up on search after 4 attempts: HTTP 503 from search",
+    "C/Bryantsev: gave up on search after 4 attempts: HTTP 503 from search",
+    "C/Shura: gave up on search after 4 attempts: HTTP 503 from search",
+    "C/Ishajain: gave up on search after 4 attempts: HTTP 503 from search"
+   ],
+   "n_errors": 11
+  },
+  "stop_reason": null,
+  "elapsed_seconds": 7310.7,
+  "requests": {
+   "attempts": 509,
+   "searches": 298,
+   "rate_limited_429": 0,
+   "backoff_seconds": 15612.0
+  }
+ }
+}
