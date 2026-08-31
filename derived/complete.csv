@@ -1,3 +1,4 @@
-date,complete,census_size,timeline_coverage,clusters_in_window,searched,truncated,raw_in_checkout
-2026-08-29,False,0,1.0,0,0,0,False
-2026-08-30,False,82,0.5975609756097561,0,213,0,True
+date,complete,stop_reason,registration_version,census_size,n_eligible,retired,unfetched,timeline_coverage,clusters_in_window,searched,missing,backfilled,truncated,raw_in_checkout
+2026-08-29,False,daily cap: HTTP 429 from situations with Retry-After 29534s,0.2,0,0,0,,1.0,0,0,0,0,0,False
+2026-08-30,False,,0.2,82,82,0,,0.5975609756097561,0,213,0,0,0,False
+2026-08-31,True,,0.3,2299,2299,0,0.0,1.0,2467,224,0,0,0,True
