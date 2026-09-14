@@ -1,0 +1,122 @@
+{
+ "date": "2026-09-14",
+ "created_at": "2026-09-14T12:49:16+00:00",
+ "started_at": "2026-09-14T12:11:00+00:00",
+ "registration_version": "0.3",
+ "collector": {
+  "package_version": "0.3.0",
+  "git_sha": "231cd928888a02ac177cc9a40e85f9c54b4024ac",
+  "runner": "github-actions"
+ },
+ "complete": true,
+ "stop_reason": null,
+ "files": {
+  "raw/situations/2026-09-14_relevance.jsonl": "af4fa84a3d2b91a1f6c6b5314276358942a12fd7e9bec09c0bb1ee8aae963cfa",
+  "raw/situations/2026-09-14_recent.jsonl": "f5ad333e61f3c9aa957df9da7fc5b9ae428c66cf930b7303ad61f4730af92e3c",
+  "raw/timelines/2026-09-14.jsonl": "2cc96daf4b9e0e1b880d5adacbad22b1ba9e22d177841d81134a3a739306a606",
+  "raw/search/2026-09-14.jsonl": "917f0e1418693ac5c59e11bddd4829f284024fc17ef45f5dea120466725397f8",
+  "raw/errors/2026-09-14.jsonl": "bbf0c01ebace31b19f499a67daf35f7ccb6d9564dab8e6a6ec3e64523cc8b24e"
+ },
+ "prev_manifest": "2026-09-13.json",
+ "prev_manifest_sha256": "94be14f76fe766a9397cc751d453eaf4fdf24c570621a7f99d5f014a264ba650",
+ "quality": {
+  "layer_a": {
+   "pages": {
+    "relevance": 35,
+    "recent": 35
+   },
+   "situations": {
+    "relevance": 1747,
+    "recent": 1747
+   },
+   "ok": {
+    "relevance": true,
+    "recent": true
+   },
+   "cursor_unexhausted": {
+    "relevance": false,
+    "recent": false
+   },
+   "errors": [],
+   "error_classes": {},
+   "n_errors": 0,
+   "census_size": 1747
+  },
+  "layer_b": {
+   "situations_fetched": 1746,
+   "census_size": 1747,
+   "pages": 1765,
+   "clusters_in_window": 1863,
+   "workers": 5,
+   "retired": [
+    "c5dc8e8f-2ce8-46fd-8c77-09ed7bdb63d9"
+   ],
+   "moved": {},
+   "deferred": [],
+   "errors": [
+    "B/c5dc8e8f-2ce8-46fd-8c77-09ed7bdb63d9: HTTP 404 from https://clstr.news/cluster/ryan-13-turns-thousands-of-cans-into-charity-donations-via-we-can-cic: {\"error\":{\"code\":\"not_found\",\"message\":\"Unknown API endpoint. See https://clstr.news/developers.\"}}"
+   ],
+   "n_errors": 1,
+   "error_classes": {
+    "404": 1
+   },
+   "stopped_early": false,
+   "n_eligible": 1746,
+   "unfetched": 0,
+   "allowed_failures": 35,
+   "coverage": 1.0,
+   "coverage_ok": true,
+   "invariant_ok": true,
+   "ok": true
+  },
+  "cohort": 3,
+  "layer_c": {
+   "cohort_size": 224,
+   "searched": 224,
+   "successful_searches": 224,
+   "second_pages": 0,
+   "truncated": [],
+   "missing": [],
+   "deferred": [],
+   "workers": 5,
+   "backfill": {
+    "queued": 0,
+    "attempted": 0,
+    "done": [],
+    "missing": []
+   },
+   "errors": [],
+   "n_errors": 0,
+   "error_classes": {},
+   "stop_reason": null,
+   "ok": true
+  },
+  "stop_reason": null,
+  "halted": null,
+  "layers_ok": {
+   "a": true,
+   "b": true,
+   "c": true
+  },
+  "elapsed_seconds": 2296.3,
+  "requests": {
+   "attempts": 2062,
+   "searches": 224,
+   "successful_searches": 224,
+   "rate_limited_429": 0,
+   "backoff_seconds": 2.0,
+   "errors_by_status": {
+    "None": 1,
+    "404": 2
+   }
+  },
+  "quota": {
+   "limit-day": "5000",
+   "limit-minute": "60",
+   "remaining-day": "2947",
+   "seen_at": "2026-09-14T12:49:16+00:00",
+   "limit-search": "250",
+   "remaining-search": "26"
+  }
+ }
+}
