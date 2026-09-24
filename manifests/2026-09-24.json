@@ -1,0 +1,122 @@
+{
+ "date": "2026-09-24",
+ "created_at": "2026-09-24T12:54:47+00:00",
+ "started_at": "2026-09-24T12:10:43+00:00",
+ "registration_version": "0.3",
+ "collector": {
+  "package_version": "0.3.0",
+  "git_sha": "e2f1c22aef3846196a9c10aaa0ed63aba68ed0b3",
+  "runner": "github-actions"
+ },
+ "complete": true,
+ "stop_reason": null,
+ "files": {
+  "raw/situations/2026-09-24_relevance.jsonl": "f6d4b24cd747efcca35b9f2336a4342b44385b7eb10b223c20621afceaca7670",
+  "raw/situations/2026-09-24_recent.jsonl": "298c3d903a62b1791bb1725d563bc036820b6fe9fc2a8cc2b761051963e9510e",
+  "raw/timelines/2026-09-24.jsonl": "7bea0c9e61cdcfe4dc70f7ab13ab6873d971480d72321279e0038d21fae596d7",
+  "raw/search/2026-09-24.jsonl": "ea5d93f5a5f6b85a9bf1179b28a733fb053a2c01998ee6be5fe7cffa0c62c1c4",
+  "raw/errors/2026-09-24.jsonl": "d0625cb07c41a7334b548eabe435ec695e08015fc22be9bd5c2c0be24e4a0d62"
+ },
+ "prev_manifest": "2026-09-23.json",
+ "prev_manifest_sha256": "31f1e689dcae27fa1e0e57dfa5a715b527a85cf7fbea2de185744c45afa1c437",
+ "quality": {
+  "layer_a": {
+   "pages": {
+    "relevance": 42,
+    "recent": 42
+   },
+   "situations": {
+    "relevance": 2059,
+    "recent": 2060
+   },
+   "ok": {
+    "relevance": true,
+    "recent": true
+   },
+   "cursor_unexhausted": {
+    "relevance": false,
+    "recent": false
+   },
+   "errors": [],
+   "error_classes": {},
+   "n_errors": 0,
+   "census_size": 2060
+  },
+  "layer_b": {
+   "situations_fetched": 2059,
+   "census_size": 2060,
+   "pages": 2087,
+   "clusters_in_window": 2190,
+   "workers": 5,
+   "retired": [
+    "e111394d-18e1-4964-8262-6caca1488174"
+   ],
+   "moved": {},
+   "deferred": [],
+   "errors": [
+    "B/e111394d-18e1-4964-8262-6caca1488174: HTTP 404 from https://clstr.news/cluster/roshibina-devi-wins-silver-in-womens-60kg-sanda-at-2026-asian-games: {\"error\":{\"code\":\"not_found\",\"message\":\"Unknown API endpoint. See https://clstr.news/developers.\"}}"
+   ],
+   "n_errors": 1,
+   "error_classes": {
+    "404": 1
+   },
+   "stopped_early": false,
+   "n_eligible": 2059,
+   "unfetched": 0,
+   "allowed_failures": 42,
+   "coverage": 1.0,
+   "coverage_ok": true,
+   "invariant_ok": true,
+   "ok": true
+  },
+  "cohort": 3,
+  "layer_c": {
+   "cohort_size": 224,
+   "searched": 224,
+   "successful_searches": 224,
+   "second_pages": 0,
+   "truncated": [],
+   "missing": [],
+   "deferred": [],
+   "workers": 5,
+   "backfill": {
+    "queued": 0,
+    "attempted": 0,
+    "done": [],
+    "missing": []
+   },
+   "errors": [],
+   "n_errors": 0,
+   "error_classes": {},
+   "stop_reason": null,
+   "ok": true
+  },
+  "stop_reason": null,
+  "halted": null,
+  "layers_ok": {
+   "a": true,
+   "b": true,
+   "c": true
+  },
+  "elapsed_seconds": 2643.7,
+  "requests": {
+   "attempts": 2400,
+   "searches": 225,
+   "successful_searches": 224,
+   "rate_limited_429": 0,
+   "backoff_seconds": 6.0,
+   "errors_by_status": {
+    "404": 2,
+    "None": 3
+   }
+  },
+  "quota": {
+   "limit-day": "5000",
+   "limit-minute": "60",
+   "remaining-day": "2606",
+   "seen_at": "2026-09-24T12:54:47+00:00",
+   "limit-search": "250",
+   "remaining-search": "26"
+  }
+ }
+}
