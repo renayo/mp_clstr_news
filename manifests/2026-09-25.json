@@ -1,0 +1,127 @@
+{
+ "date": "2026-09-25",
+ "created_at": "2026-09-25T12:57:25+00:00",
+ "started_at": "2026-09-25T12:10:45+00:00",
+ "registration_version": "0.3",
+ "collector": {
+  "package_version": "0.3.0",
+  "git_sha": "cb8e8e66c12d13b24b3348903b1ffd7bb5ce9dbb",
+  "runner": "github-actions"
+ },
+ "complete": true,
+ "stop_reason": null,
+ "files": {
+  "raw/situations/2026-09-25_relevance.jsonl": "25a19fa3c7f4c90640cef96b8e6549e3728c51c7ba42525be3e46eb32fa8d074",
+  "raw/situations/2026-09-25_recent.jsonl": "6ffcedca0e3ec54c4e2a37e2ef37e53e4a7e8cc09e94e36d9539dbfda11df951",
+  "raw/timelines/2026-09-25.jsonl": "918711a13767f20ee658094733c6ebf0475bb92945ce527dc74284da8a2e6daa",
+  "raw/search/2026-09-25.jsonl": "c448d1124c48496af889c9a3e2a399d7f5f3a64cd7bbd8d85c76a975baa77efe",
+  "raw/errors/2026-09-25.jsonl": "79e333e6a03dacc082f269cb1ab1ac9f5ac89416ca030c9b3a5c56e75a5fffee"
+ },
+ "prev_manifest": "2026-09-24.json",
+ "prev_manifest_sha256": "51258c1568820875b339ca5e5def3cab1a461fcf42bc9d4775e8488a9ffa8845",
+ "quality": {
+  "layer_a": {
+   "pages": {
+    "relevance": 44,
+    "recent": 43
+   },
+   "situations": {
+    "relevance": 2151,
+    "recent": 2152
+   },
+   "ok": {
+    "relevance": true,
+    "recent": true
+   },
+   "cursor_unexhausted": {
+    "relevance": false,
+    "recent": false
+   },
+   "errors": [],
+   "error_classes": {},
+   "n_errors": 0,
+   "census_size": 2152
+  },
+  "layer_b": {
+   "situations_fetched": 2149,
+   "census_size": 2152,
+   "pages": 2173,
+   "clusters_in_window": 2270,
+   "workers": 5,
+   "retired": [
+    "fe790e41-35db-4b7a-9ad4-3f61be4547c1",
+    "14feb514-b7a9-4fc4-86b5-01dfa841e491",
+    "b574dc82-5bdb-4939-ba7b-ab1559e8df42"
+   ],
+   "moved": {},
+   "deferred": [],
+   "errors": [
+    "B/fe790e41-35db-4b7a-9ad4-3f61be4547c1: HTTP 404 from situations/fe790e41-35db-4b7a-9ad4-3f61be4547c1: {\"error\":{\"code\":\"not_found\",\"message\":\"No situation with that id or slug.\"}}",
+    "B/14feb514-b7a9-4fc4-86b5-01dfa841e491: HTTP 404 from situations/14feb514-b7a9-4fc4-86b5-01dfa841e491: {\"error\":{\"code\":\"not_found\",\"message\":\"No situation with that id or slug.\"}}",
+    "B/b574dc82-5bdb-4939-ba7b-ab1559e8df42: HTTP 404 from situations/b574dc82-5bdb-4939-ba7b-ab1559e8df42: {\"error\":{\"code\":\"not_found\",\"message\":\"No situation with that id or slug.\"}}"
+   ],
+   "n_errors": 3,
+   "error_classes": {
+    "404": 3
+   },
+   "stopped_early": false,
+   "n_eligible": 2149,
+   "unfetched": 0,
+   "allowed_failures": 43,
+   "coverage": 1.0,
+   "coverage_ok": true,
+   "invariant_ok": true,
+   "ok": true
+  },
+  "cohort": 4,
+  "layer_c": {
+   "cohort_size": 224,
+   "searched": 224,
+   "successful_searches": 224,
+   "second_pages": 0,
+   "truncated": [],
+   "missing": [],
+   "deferred": [],
+   "workers": 5,
+   "backfill": {
+    "queued": 0,
+    "attempted": 0,
+    "done": [],
+    "missing": []
+   },
+   "errors": [],
+   "n_errors": 0,
+   "error_classes": {},
+   "stop_reason": null,
+   "ok": true
+  },
+  "stop_reason": null,
+  "halted": null,
+  "layers_ok": {
+   "a": true,
+   "b": true,
+   "c": true
+  },
+  "elapsed_seconds": 2799.7,
+  "requests": {
+   "attempts": 2490,
+   "searches": 226,
+   "successful_searches": 224,
+   "rate_limited_429": 0,
+   "backoff_seconds": 6.0,
+   "errors_by_status": {
+    "404": 3,
+    "None": 2,
+    "503": 1
+   }
+  },
+  "quota": {
+   "limit-day": "5000",
+   "limit-minute": "60",
+   "remaining-day": "2512",
+   "seen_at": "2026-09-25T12:57:25+00:00",
+   "limit-search": "250",
+   "remaining-search": "26"
+  }
+ }
+}
