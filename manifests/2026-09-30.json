@@ -1,0 +1,121 @@
+{
+ "date": "2026-09-30",
+ "created_at": "2026-09-30T13:01:48+00:00",
+ "started_at": "2026-09-30T12:11:33+00:00",
+ "registration_version": "0.3",
+ "collector": {
+  "package_version": "0.3.0",
+  "git_sha": "e19fdc5566659aeaf057cc24fd2a043c7974b029",
+  "runner": "github-actions"
+ },
+ "complete": true,
+ "stop_reason": null,
+ "files": {
+  "raw/situations/2026-09-30_relevance.jsonl": "e07cd02a48e8a15ed1a1f60e94db0cfce4beebb351b10315099d8244bf10fa04",
+  "raw/situations/2026-09-30_recent.jsonl": "8900b49ea377519b9cdfd7b68b2ef2d8a7674126ff44857f40078cf2f411249f",
+  "raw/timelines/2026-09-30.jsonl": "eecafeb7d6e1e526e55e9d2e5bca14e419a99f59029430a84a8a7a95b4b4de16",
+  "raw/search/2026-09-30.jsonl": "26949595865ba0c72b73edc05d1b788a5cd257e2a4ccaabd33b596796cb16249",
+  "raw/errors/2026-09-30.jsonl": "9fc966c8463fe632dcb32759c582e6447ed7f502600406b0d44706eceed9b925"
+ },
+ "prev_manifest": "2026-09-29.json",
+ "prev_manifest_sha256": "46a60dd5b969dd3e8b6de906647eb9ee7db68705361cd1866a13cf8afd89bf05",
+ "quality": {
+  "layer_a": {
+   "pages": {
+    "relevance": 47,
+    "recent": 47
+   },
+   "situations": {
+    "relevance": 2344,
+    "recent": 2347
+   },
+   "ok": {
+    "relevance": true,
+    "recent": true
+   },
+   "cursor_unexhausted": {
+    "relevance": false,
+    "recent": false
+   },
+   "errors": [],
+   "error_classes": {},
+   "n_errors": 0,
+   "census_size": 2347
+  },
+  "layer_b": {
+   "situations_fetched": 2346,
+   "census_size": 2347,
+   "pages": 2380,
+   "clusters_in_window": 2503,
+   "workers": 5,
+   "retired": [
+    "e3682de2-3a02-47a8-9462-69d3a9950290"
+   ],
+   "moved": {},
+   "deferred": [],
+   "errors": [
+    "B/e3682de2-3a02-47a8-9462-69d3a9950290: HTTP 404 from https://clstr.news/cluster/chad-lowes-daughter-fiona-dies-at-age-13: {\"error\":{\"code\":\"not_found\",\"message\":\"Unknown API endpoint. See https://clstr.news/developers.\"}}"
+   ],
+   "n_errors": 1,
+   "error_classes": {
+    "404": 1
+   },
+   "stopped_early": false,
+   "n_eligible": 2346,
+   "unfetched": 0,
+   "allowed_failures": 47,
+   "coverage": 1.0,
+   "coverage_ok": true,
+   "invariant_ok": true,
+   "ok": true
+  },
+  "cohort": 4,
+  "layer_c": {
+   "cohort_size": 224,
+   "searched": 224,
+   "successful_searches": 224,
+   "second_pages": 0,
+   "truncated": [],
+   "missing": [],
+   "deferred": [],
+   "workers": 5,
+   "backfill": {
+    "queued": 0,
+    "attempted": 0,
+    "done": [],
+    "missing": []
+   },
+   "errors": [],
+   "n_errors": 0,
+   "error_classes": {},
+   "stop_reason": null,
+   "ok": true
+  },
+  "stop_reason": null,
+  "halted": null,
+  "layers_ok": {
+   "a": true,
+   "b": true,
+   "c": true
+  },
+  "elapsed_seconds": 3014.3,
+  "requests": {
+   "attempts": 2700,
+   "searches": 224,
+   "successful_searches": 224,
+   "rate_limited_429": 0,
+   "backoff_seconds": 0.0,
+   "errors_by_status": {
+    "404": 2
+   }
+  },
+  "quota": {
+   "limit-day": "5000",
+   "limit-minute": "60",
+   "remaining-day": "2303",
+   "seen_at": "2026-09-30T13:01:48+00:00",
+   "limit-search": "250",
+   "remaining-search": "26"
+  }
+ }
+}
