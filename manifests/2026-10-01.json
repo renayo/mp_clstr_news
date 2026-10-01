@@ -1,0 +1,168 @@
+{
+ "date": "2026-10-01",
+ "created_at": "2026-10-01T13:43:52+00:00",
+ "started_at": "2026-10-01T12:11:43+00:00",
+ "registration_version": "0.3",
+ "collector": {
+  "package_version": "0.3.0",
+  "git_sha": "42248f6cd63dc7da9fb35c4d6e508e43f45a480d",
+  "runner": "github-actions"
+ },
+ "complete": true,
+ "stop_reason": null,
+ "files": {
+  "raw/situations/2026-10-01_relevance.jsonl": "fbddaed8634f9402c2f060e0a797e3cce43bc8287a5092fe2e4eb5a5c2432653",
+  "raw/situations/2026-10-01_recent.jsonl": "c1e809d54faa5c85290367779d270474c6b0367cdc46ecefbda9a2d6b21a94c8",
+  "raw/timelines/2026-10-01.jsonl": "d01f7aec763dccb41fd33c34bf1ca8c080b1ba0a0c922f8310101399e2e7069c",
+  "raw/search/2026-10-01.jsonl": "a4384d5515ea103bea7733c215fa6fc509070e75854de00142ddf26e84e93402",
+  "raw/errors/2026-10-01.jsonl": "5fe500bca8831f3c3ef5e64e26093ab5d9ffd31e2bda5e29da39d18787d372ca"
+ },
+ "prev_manifest": "2026-09-30.json",
+ "prev_manifest_sha256": "c8e7ed4237ee853c233f65e7dd80ef73e59dcc8b40a2faebcc6c907066b90d5f",
+ "quality": {
+  "layer_a": {
+   "pages": {
+    "relevance": 23,
+    "recent": 23
+   },
+   "situations": {
+    "relevance": 1100,
+    "recent": 1100
+   },
+   "ok": {
+    "relevance": true,
+    "recent": true
+   },
+   "cursor_unexhausted": {
+    "relevance": false,
+    "recent": false
+   },
+   "errors": [],
+   "error_classes": {},
+   "n_errors": 0,
+   "census_size": 1100
+  },
+  "layer_b": {
+   "situations_fetched": 1100,
+   "census_size": 1100,
+   "pages": 1108,
+   "clusters_in_window": 1150,
+   "workers": 5,
+   "retired": [],
+   "moved": {},
+   "deferred": [],
+   "errors": [
+    "B/56757fe9-8ec8-486b-bb2c-c4e121ec2c1c: gave up on situations/56757fe9-8ec8-486b-bb2c-c4e121ec2c1c after 4 attempts: ReadTimeout from situations/56757fe9-8ec8-486b-bb2c-c4e121ec2c1c",
+    "B/ab09b529-8f21-4f0a-8364-76eceae10c6a: gave up on situations/ab09b529-8f21-4f0a-8364-76eceae10c6a after 4 attempts: ReadTimeout from situations/ab09b529-8f21-4f0a-8364-76eceae10c6a",
+    "B/938086f3-c316-4d85-9790-ac80d766c488: gave up on situations/938086f3-c316-4d85-9790-ac80d766c488 after 4 attempts: ReadTimeout from situations/938086f3-c316-4d85-9790-ac80d766c488",
+    "B/c6b5e9db-8c8a-42b5-9a97-d752b4185b8f: gave up on situations/c6b5e9db-8c8a-42b5-9a97-d752b4185b8f after 4 attempts: ReadTimeout from situations/c6b5e9db-8c8a-42b5-9a97-d752b4185b8f",
+    "B/948bef95-e331-40b5-bdb7-9ff5e84890bd: gave up on situations/948bef95-e331-40b5-bdb7-9ff5e84890bd after 4 attempts: ReadTimeout from situations/948bef95-e331-40b5-bdb7-9ff5e84890bd",
+    "B/1270eb04-a2f8-455c-8d2e-8e5f0ec21f0c: gave up on situations/1270eb04-a2f8-455c-8d2e-8e5f0ec21f0c after 4 attempts: ReadTimeout from situations/1270eb04-a2f8-455c-8d2e-8e5f0ec21f0c",
+    "B/78211053-5d38-4707-a257-3be52bbaf7cb: gave up on situations/78211053-5d38-4707-a257-3be52bbaf7cb after 4 attempts: ReadTimeout from situations/78211053-5d38-4707-a257-3be52bbaf7cb",
+    "B/9d97681c-5e60-4b0c-8d48-beac18b2bbd7: gave up on situations/9d97681c-5e60-4b0c-8d48-beac18b2bbd7 after 4 attempts: ReadTimeout from situations/9d97681c-5e60-4b0c-8d48-beac18b2bbd7",
+    "B/35589500-6efa-471b-a293-a624635b5614: gave up on situations/35589500-6efa-471b-a293-a624635b5614 after 4 attempts: ReadTimeout from situations/35589500-6efa-471b-a293-a624635b5614",
+    "B/072c18d2-93f6-4cdb-99b6-cd45cb7c8d19: gave up on situations/072c18d2-93f6-4cdb-99b6-cd45cb7c8d19 after 4 attempts: ReadTimeout from situations/072c18d2-93f6-4cdb-99b6-cd45cb7c8d19"
+   ],
+   "n_errors": 10,
+   "error_classes": {
+    "None": 10
+   },
+   "stopped_early": false,
+   "n_eligible": 1100,
+   "unfetched": 0,
+   "allowed_failures": 22,
+   "coverage": 1.0,
+   "coverage_ok": true,
+   "invariant_ok": true,
+   "ok": true,
+   "second_pass": {
+    "attempted": 10,
+    "recovered": 10
+   }
+  },
+  "cohort": 0,
+  "layer_c": {
+   "cohort_size": 225,
+   "searched": 217,
+   "successful_searches": 217,
+   "second_pages": 0,
+   "truncated": [],
+   "missing": [
+    "Lub",
+    "Forman",
+    "Awa",
+    "Sor",
+    "Link",
+    "Mallorca",
+    "Eris",
+    "Quaoar"
+   ],
+   "deferred": [],
+   "workers": 5,
+   "backfill": {
+    "queued": 0,
+    "attempted": 0,
+    "done": [],
+    "missing": []
+   },
+   "errors": [
+    "C/Lub: gave up on search after 4 attempts: ReadTimeout from search",
+    "C/Forman: gave up on search after 4 attempts: HTTP 503 from search",
+    "C/Awa: gave up on search after 4 attempts: HTTP 503 from search",
+    "C/Sor: gave up on search after 4 attempts: HTTP 503 from search",
+    "C/Link: gave up on search after 4 attempts: ReadTimeout from search",
+    "C/Mallorca: gave up on search after 4 attempts: HTTP 503 from search",
+    "C/Eris: gave up on search after 4 attempts: HTTP 503 from search",
+    "C/Quaoar: gave up on search after 4 attempts: HTTP 503 from search",
+    "C/Link: HTTP 429 from search with Retry-After 37046s",
+    "C/Mallorca: HTTP 429 from search with Retry-After 37046s",
+    "C/Eris: HTTP 429 from search with Retry-After 37045s",
+    "C/Quaoar: HTTP 429 from search with Retry-After 37044s",
+    "C/Lub: HTTP 429 from search with Retry-After 36969s",
+    "C/Forman: HTTP 429 from search with Retry-After 36968s",
+    "C/Awa: HTTP 429 from search with Retry-After 36968s",
+    "C/Sor: HTTP 429 from search with Retry-After 36968s"
+   ],
+   "n_errors": 16,
+   "error_classes": {
+    "None": 2,
+    "503": 6,
+    "429": 8
+   },
+   "stop_reason": "search_cap_reached",
+   "ok": false,
+   "second_pass": {
+    "attempted": 8,
+    "recovered": 0
+   }
+  },
+  "stop_reason": null,
+  "halted": null,
+  "layers_ok": {
+   "a": true,
+   "b": true,
+   "c": false
+  },
+  "elapsed_seconds": 5528.8,
+  "requests": {
+   "attempts": 1575,
+   "searches": 303,
+   "successful_searches": 217,
+   "rate_limited_429": 8,
+   "backoff_seconds": 912.0,
+   "errors_by_status": {
+    "None": 160,
+    "503": 36,
+    "429": 8
+   }
+  },
+  "quota": {
+   "limit-day": "5000",
+   "limit-minute": "60",
+   "remaining-day": "3474",
+   "seen_at": "2026-10-01T13:43:52+00:00",
+   "limit-search": "250",
+   "remaining-search": "0"
+  }
+ }
+}
