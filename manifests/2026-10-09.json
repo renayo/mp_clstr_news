@@ -1,0 +1,123 @@
+{
+ "date": "2026-10-09",
+ "created_at": "2026-10-09T12:39:05+00:00",
+ "started_at": "2026-10-09T12:10:45+00:00",
+ "registration_version": "0.3",
+ "collector": {
+  "package_version": "0.3.0",
+  "git_sha": "0558cc457d34759b1700b0259db3446952ec8bc0",
+  "runner": "github-actions"
+ },
+ "complete": true,
+ "stop_reason": null,
+ "files": {
+  "raw/situations/2026-10-09_relevance.jsonl": "c577015e0facc0d4522ec3a26de0f60b0fc201022b434bfe9b1e2f8cce90ae84",
+  "raw/situations/2026-10-09_recent.jsonl": "36fdfedc8df4d3fb9d107b7e7cb30b7e84397ac93de544823d10968b8706b92a",
+  "raw/timelines/2026-10-09.jsonl": "44ab1c913e74d2d44227f5f71fd0e41935addad06c7a23db2555de8b540d192a",
+  "raw/search/2026-10-09.jsonl": "6712c6e1005ae0fc8ee456eee0d25d64d5935d5ec61c543059c4dc16e5282a10",
+  "raw/errors/2026-10-09.jsonl": "36d08ba2f2fd7bded758eb139aee7f13f105d30ce4c3eab98751d5831444c891"
+ },
+ "prev_manifest": "2026-10-08.json",
+ "prev_manifest_sha256": "e52e6a37b48954764926425a752e985dd70eb86a04b9ded1c014736c65d55008",
+ "quality": {
+  "layer_a": {
+   "pages": {
+    "relevance": 26,
+    "recent": 26
+   },
+   "situations": {
+    "relevance": 1275,
+    "recent": 1276
+   },
+   "ok": {
+    "relevance": true,
+    "recent": true
+   },
+   "cursor_unexhausted": {
+    "relevance": false,
+    "recent": false
+   },
+   "errors": [],
+   "error_classes": {},
+   "n_errors": 0,
+   "census_size": 1276
+  },
+  "layer_b": {
+   "situations_fetched": 1274,
+   "census_size": 1276,
+   "pages": 1285,
+   "clusters_in_window": 1321,
+   "workers": 5,
+   "retired": [
+    "58d163eb-aee7-47f4-884f-e417f9d1ae36",
+    "570c8458-7f30-4b01-bcd0-f33315abd527"
+   ],
+   "moved": {},
+   "deferred": [],
+   "errors": [
+    "B/58d163eb-aee7-47f4-884f-e417f9d1ae36: HTTP 404 from situations/58d163eb-aee7-47f4-884f-e417f9d1ae36: {\"error\":{\"code\":\"not_found\",\"message\":\"No situation with that id or slug.\"}}",
+    "B/570c8458-7f30-4b01-bcd0-f33315abd527: HTTP 404 from situations/570c8458-7f30-4b01-bcd0-f33315abd527: {\"error\":{\"code\":\"not_found\",\"message\":\"No situation with that id or slug.\"}}"
+   ],
+   "n_errors": 2,
+   "error_classes": {
+    "404": 2
+   },
+   "stopped_early": false,
+   "n_eligible": 1274,
+   "unfetched": 0,
+   "allowed_failures": 26,
+   "coverage": 1.0,
+   "coverage_ok": true,
+   "invariant_ok": true,
+   "ok": true
+  },
+  "cohort": 3,
+  "layer_c": {
+   "cohort_size": 224,
+   "searched": 224,
+   "successful_searches": 224,
+   "second_pages": 0,
+   "truncated": [],
+   "missing": [],
+   "deferred": [],
+   "workers": 5,
+   "backfill": {
+    "queued": 0,
+    "attempted": 0,
+    "done": [],
+    "missing": []
+   },
+   "errors": [],
+   "n_errors": 0,
+   "error_classes": {},
+   "stop_reason": null,
+   "ok": true
+  },
+  "stop_reason": null,
+  "halted": null,
+  "layers_ok": {
+   "a": true,
+   "b": true,
+   "c": true
+  },
+  "elapsed_seconds": 1699.7,
+  "requests": {
+   "attempts": 1563,
+   "searches": 224,
+   "successful_searches": 224,
+   "rate_limited_429": 0,
+   "backoff_seconds": 0.0,
+   "errors_by_status": {
+    "404": 2
+   }
+  },
+  "quota": {
+   "limit-day": "5000",
+   "limit-minute": "60",
+   "remaining-day": "3443",
+   "seen_at": "2026-10-09T12:39:05+00:00",
+   "limit-search": "250",
+   "remaining-search": "26"
+  }
+ }
+}
