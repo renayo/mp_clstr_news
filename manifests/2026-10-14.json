@@ -1,0 +1,122 @@
+{
+ "date": "2026-10-14",
+ "created_at": "2026-10-14T12:50:47+00:00",
+ "started_at": "2026-10-14T12:10:59+00:00",
+ "registration_version": "0.3",
+ "collector": {
+  "package_version": "0.3.0",
+  "git_sha": "9e217243da66233f2a901aecee909c25783c9288",
+  "runner": "github-actions"
+ },
+ "complete": true,
+ "stop_reason": null,
+ "files": {
+  "raw/situations/2026-10-14_relevance.jsonl": "8e928cd8ad187e0c3b19bb9d54467c6644fce6a6161ed8639b77ff9472aad935",
+  "raw/situations/2026-10-14_recent.jsonl": "133de0d99a1dfdb96214b926b96198845328e586649b4ecc903ea555c0035133",
+  "raw/timelines/2026-10-14.jsonl": "d19fa4a03d7343ae68ca49b666c74b5f60ae0aaf188e959ad9909c874bb07501",
+  "raw/search/2026-10-14.jsonl": "9d46a568b0cc4d6110a81388850b0da36c6d595d7c6ddcb0a7eeaae8ef38d593",
+  "raw/errors/2026-10-14.jsonl": "72b841ab4c350bf25630566bf9603b78499243cc3adb99bc1b916e67f9ca255c"
+ },
+ "prev_manifest": "2026-10-13.json",
+ "prev_manifest_sha256": "641f575294404a3c3a6e08c8a47a95b13feebbefbd2e01293f62993a2ae736d0",
+ "quality": {
+  "layer_a": {
+   "pages": {
+    "relevance": 38,
+    "recent": 38
+   },
+   "situations": {
+    "relevance": 1863,
+    "recent": 1866
+   },
+   "ok": {
+    "relevance": true,
+    "recent": true
+   },
+   "cursor_unexhausted": {
+    "relevance": false,
+    "recent": false
+   },
+   "errors": [],
+   "error_classes": {},
+   "n_errors": 0,
+   "census_size": 1866
+  },
+  "layer_b": {
+   "situations_fetched": 1865,
+   "census_size": 1866,
+   "pages": 1890,
+   "clusters_in_window": 1955,
+   "workers": 5,
+   "retired": [
+    "eead899b-4487-49ba-9161-29d197720563"
+   ],
+   "moved": {},
+   "deferred": [],
+   "errors": [
+    "B/eead899b-4487-49ba-9161-29d197720563: HTTP 404 from situations/eead899b-4487-49ba-9161-29d197720563: {\"error\":{\"code\":\"not_found\",\"message\":\"No situation with that id or slug.\"}}"
+   ],
+   "n_errors": 1,
+   "error_classes": {
+    "404": 1
+   },
+   "stopped_early": false,
+   "n_eligible": 1865,
+   "unfetched": 0,
+   "allowed_failures": 38,
+   "coverage": 1.0,
+   "coverage_ok": true,
+   "invariant_ok": true,
+   "ok": true
+  },
+  "cohort": 3,
+  "layer_c": {
+   "cohort_size": 224,
+   "searched": 224,
+   "successful_searches": 224,
+   "second_pages": 0,
+   "truncated": [],
+   "missing": [],
+   "deferred": [],
+   "workers": 5,
+   "backfill": {
+    "queued": 0,
+    "attempted": 0,
+    "done": [],
+    "missing": []
+   },
+   "errors": [],
+   "n_errors": 0,
+   "error_classes": {},
+   "stop_reason": null,
+   "ok": true
+  },
+  "stop_reason": null,
+  "halted": null,
+  "layers_ok": {
+   "a": true,
+   "b": true,
+   "c": true
+  },
+  "elapsed_seconds": 2388.2,
+  "requests": {
+   "attempts": 2195,
+   "searches": 226,
+   "successful_searches": 224,
+   "rate_limited_429": 0,
+   "backoff_seconds": 8.0,
+   "errors_by_status": {
+    "None": 4,
+    "404": 1
+   }
+  },
+  "quota": {
+   "limit-day": "5000",
+   "limit-minute": "60",
+   "remaining-day": "2833",
+   "seen_at": "2026-10-14T12:50:47+00:00",
+   "limit-search": "250",
+   "remaining-search": "26"
+  }
+ }
+}
