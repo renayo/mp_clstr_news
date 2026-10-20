@@ -1,0 +1,121 @@
+{
+ "date": "2026-10-20",
+ "created_at": "2026-10-20T12:50:22+00:00",
+ "started_at": "2026-10-20T12:10:31+00:00",
+ "registration_version": "0.3",
+ "collector": {
+  "package_version": "0.3.0",
+  "git_sha": "c4454bd7c77185f017295195b51b683d0b48c878",
+  "runner": "github-actions"
+ },
+ "complete": true,
+ "stop_reason": null,
+ "files": {
+  "raw/situations/2026-10-20_relevance.jsonl": "ecb385b5e776ca7b27a4f2d1a794953a1988b2861c446c2da935975adc0e41f9",
+  "raw/situations/2026-10-20_recent.jsonl": "232322263481876764c42d406f9c6fab5a7b59a0a42cbad8b2c76ffebee9076f",
+  "raw/timelines/2026-10-20.jsonl": "daec413214294c566fa34ce279bf6c1c9a703aed48812c1fea763d70ab51b4a5",
+  "raw/search/2026-10-20.jsonl": "b67d7ff30db5ff0bd1c5792f3b296017e2a5413b00aa2cec80244fb758f4f22d",
+  "raw/errors/2026-10-20.jsonl": "661a825fdf6a7f08f09302675d20cc71508473c3904b5cb79343ad4fbe30bbd8"
+ },
+ "prev_manifest": "2026-10-19.json",
+ "prev_manifest_sha256": "c1c8d9be2b47e9a7915a254d79bdd6d45629a0ba262f27fad3a2b9026b71d9e5",
+ "quality": {
+  "layer_a": {
+   "pages": {
+    "relevance": 38,
+    "recent": 38
+   },
+   "situations": {
+    "relevance": 1877,
+    "recent": 1877
+   },
+   "ok": {
+    "relevance": true,
+    "recent": true
+   },
+   "cursor_unexhausted": {
+    "relevance": false,
+    "recent": false
+   },
+   "errors": [],
+   "error_classes": {},
+   "n_errors": 0,
+   "census_size": 1877
+  },
+  "layer_b": {
+   "situations_fetched": 1876,
+   "census_size": 1877,
+   "pages": 1894,
+   "clusters_in_window": 1973,
+   "workers": 5,
+   "retired": [
+    "f44eb9dc-e390-4f09-a6b8-6ed395b7a1b4"
+   ],
+   "moved": {},
+   "deferred": [],
+   "errors": [
+    "B/f44eb9dc-e390-4f09-a6b8-6ed395b7a1b4: HTTP 404 from https://clstr.news/cluster/uma-musume-pretty-derby-los-angeles-concert-cancelled-due-to-us-visa-issues: {\"error\":{\"code\":\"not_found\",\"message\":\"Unknown API endpoint. See https://clstr.news/developers.\"}}"
+   ],
+   "n_errors": 1,
+   "error_classes": {
+    "404": 1
+   },
+   "stopped_early": false,
+   "n_eligible": 1876,
+   "unfetched": 0,
+   "allowed_failures": 38,
+   "coverage": 1.0,
+   "coverage_ok": true,
+   "invariant_ok": true,
+   "ok": true
+  },
+  "cohort": 4,
+  "layer_c": {
+   "cohort_size": 224,
+   "searched": 224,
+   "successful_searches": 224,
+   "second_pages": 0,
+   "truncated": [],
+   "missing": [],
+   "deferred": [],
+   "workers": 5,
+   "backfill": {
+    "queued": 0,
+    "attempted": 0,
+    "done": [],
+    "missing": []
+   },
+   "errors": [],
+   "n_errors": 0,
+   "error_classes": {},
+   "stop_reason": null,
+   "ok": true
+  },
+  "stop_reason": null,
+  "halted": null,
+  "layers_ok": {
+   "a": true,
+   "b": true,
+   "c": true
+  },
+  "elapsed_seconds": 2390.5,
+  "requests": {
+   "attempts": 2196,
+   "searches": 224,
+   "successful_searches": 224,
+   "rate_limited_429": 0,
+   "backoff_seconds": 0.0,
+   "errors_by_status": {
+    "404": 2
+   }
+  },
+  "quota": {
+   "limit-day": "5000",
+   "limit-minute": "60",
+   "remaining-day": "2808",
+   "seen_at": "2026-10-20T12:50:22+00:00",
+   "limit-search": "250",
+   "remaining-search": "26"
+  }
+ }
+}
