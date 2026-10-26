@@ -1,0 +1,115 @@
+{
+ "date": "2026-10-26",
+ "created_at": "2026-10-26T14:19:33+00:00",
+ "started_at": "2026-10-26T13:33:22+00:00",
+ "registration_version": "0.3",
+ "collector": {
+  "package_version": "0.3.0",
+  "git_sha": "71a4015c2480d938bcaf643ccff8b82a9a71ef19",
+  "runner": "github-actions"
+ },
+ "complete": true,
+ "stop_reason": null,
+ "files": {
+  "raw/situations/2026-10-26_relevance.jsonl": "2163c387a79ffdf87e3431d5cc841a2bf933a561f54fca1dd7bade446f0f1cdc",
+  "raw/situations/2026-10-26_recent.jsonl": "c58ca7d6501d8ac76a991d7c887ae41f4cb483be81c0bda7748cb6aa68cb3c03",
+  "raw/timelines/2026-10-26.jsonl": "c3ea1edda47d2d76c3ffff2d524960dcdf301dc82b2b129aeb9b9aa61bc8769f",
+  "raw/search/2026-10-26.jsonl": "61accf718a3d99e9defd7e51c30540798854803f28cf9af5da329b0eeacfd4f2",
+  "raw/errors/2026-10-26.jsonl": "97a45935796e5f20d498a219cdaa26dab0207ec4048fe750e271cca8d023de86"
+ },
+ "prev_manifest": "2026-10-25.json",
+ "prev_manifest_sha256": "1115c4d7884e11247253725ec16198cc23b3baa2cb3e5a9d5774a545ca786a79",
+ "quality": {
+  "layer_a": {
+   "pages": {
+    "relevance": 44,
+    "recent": 44
+   },
+   "situations": {
+    "relevance": 2161,
+    "recent": 2162
+   },
+   "ok": {
+    "relevance": true,
+    "recent": true
+   },
+   "cursor_unexhausted": {
+    "relevance": false,
+    "recent": false
+   },
+   "errors": [],
+   "error_classes": {},
+   "n_errors": 0,
+   "census_size": 2162
+  },
+  "layer_b": {
+   "situations_fetched": 2162,
+   "census_size": 2162,
+   "pages": 2199,
+   "clusters_in_window": 2285,
+   "workers": 5,
+   "retired": [],
+   "moved": {},
+   "deferred": [],
+   "errors": [],
+   "n_errors": 0,
+   "error_classes": {},
+   "stopped_early": false,
+   "n_eligible": 2162,
+   "unfetched": 0,
+   "allowed_failures": 44,
+   "coverage": 1.0,
+   "coverage_ok": true,
+   "invariant_ok": true,
+   "ok": true
+  },
+  "cohort": 0,
+  "layer_c": {
+   "cohort_size": 225,
+   "searched": 225,
+   "successful_searches": 225,
+   "second_pages": 0,
+   "truncated": [],
+   "missing": [],
+   "deferred": [],
+   "workers": 5,
+   "backfill": {
+    "queued": 0,
+    "attempted": 0,
+    "done": [],
+    "missing": []
+   },
+   "errors": [],
+   "n_errors": 0,
+   "error_classes": {},
+   "stop_reason": null,
+   "ok": true
+  },
+  "stop_reason": null,
+  "halted": null,
+  "layers_ok": {
+   "a": true,
+   "b": true,
+   "c": true
+  },
+  "elapsed_seconds": 2770.9,
+  "requests": {
+   "attempts": 2515,
+   "searches": 225,
+   "successful_searches": 225,
+   "rate_limited_429": 0,
+   "backoff_seconds": 6.0,
+   "errors_by_status": {
+    "None": 3
+   }
+  },
+  "quota": {
+   "limit-day": "5000",
+   "limit-minute": "60",
+   "remaining-day": "2514",
+   "seen_at": "2026-10-26T14:19:33+00:00",
+   "limit-search": "250",
+   "remaining-search": "26"
+  }
+ }
+}
