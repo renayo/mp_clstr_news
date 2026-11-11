@@ -1,0 +1,112 @@
+{
+ "date": "2026-11-11",
+ "created_at": "2026-11-11T19:50:10+00:00",
+ "started_at": "2026-11-11T19:07:32+00:00",
+ "registration_version": "0.3",
+ "collector": {
+  "package_version": "0.3.0",
+  "git_sha": "7e9d34be5009c2ede4608fe743cb58c083f912bb",
+  "runner": "github-actions"
+ },
+ "complete": true,
+ "stop_reason": null,
+ "files": {
+  "raw/situations/2026-11-11_relevance.jsonl": "080b5fc50fff000bf934978a1b07566aa18cb6427d16c45b7e96d9c4a9cf428e",
+  "raw/situations/2026-11-11_recent.jsonl": "767656495efd1fb5563e782d6dc8782c44e6cbd8950456a8da276e03ef6fd34f",
+  "raw/timelines/2026-11-11.jsonl": "99ccb5ceb607dab9ffdcb4b6795e247e72cd47beacd90b1f17e138ede159e454",
+  "raw/search/2026-11-11.jsonl": "c06de1dde69ec5dce59050924d8ed566cb4ca99a7e941b5d4ae9a65ef37562d4"
+ },
+ "prev_manifest": "2026-11-10.json",
+ "prev_manifest_sha256": "caa10fe1facd54ee7a30014bae95a94da360a83f0d1183d906850cfb9830b49c",
+ "quality": {
+  "layer_a": {
+   "pages": {
+    "relevance": 38,
+    "recent": 38
+   },
+   "situations": {
+    "relevance": 1896,
+    "recent": 1899
+   },
+   "ok": {
+    "relevance": true,
+    "recent": true
+   },
+   "cursor_unexhausted": {
+    "relevance": false,
+    "recent": false
+   },
+   "errors": [],
+   "error_classes": {},
+   "n_errors": 0,
+   "census_size": 1899
+  },
+  "layer_b": {
+   "situations_fetched": 1899,
+   "census_size": 1899,
+   "pages": 1934,
+   "clusters_in_window": 1696,
+   "workers": 5,
+   "retired": [],
+   "moved": {},
+   "deferred": [],
+   "errors": [],
+   "n_errors": 0,
+   "error_classes": {},
+   "stopped_early": false,
+   "n_eligible": 1899,
+   "unfetched": 0,
+   "allowed_failures": 38,
+   "coverage": 1.0,
+   "coverage_ok": true,
+   "invariant_ok": true,
+   "ok": true
+  },
+  "cohort": 1,
+  "layer_c": {
+   "cohort_size": 225,
+   "searched": 225,
+   "successful_searches": 225,
+   "second_pages": 0,
+   "truncated": [],
+   "missing": [],
+   "deferred": [],
+   "workers": 5,
+   "backfill": {
+    "queued": 0,
+    "attempted": 0,
+    "done": [],
+    "missing": []
+   },
+   "errors": [],
+   "n_errors": 0,
+   "error_classes": {},
+   "stop_reason": null,
+   "ok": true
+  },
+  "stop_reason": null,
+  "halted": null,
+  "layers_ok": {
+   "a": true,
+   "b": true,
+   "c": true
+  },
+  "elapsed_seconds": 2558.0,
+  "requests": {
+   "attempts": 2235,
+   "searches": 225,
+   "successful_searches": 225,
+   "rate_limited_429": 0,
+   "backoff_seconds": 0.0,
+   "errors_by_status": {}
+  },
+  "quota": {
+   "limit-day": "5000",
+   "limit-minute": "60",
+   "remaining-day": "2788",
+   "seen_at": "2026-11-11T19:50:10+00:00",
+   "limit-search": "250",
+   "remaining-search": "25"
+  }
+ }
+}
