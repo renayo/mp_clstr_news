@@ -1,0 +1,121 @@
+{
+ "date": "2026-11-16",
+ "created_at": "2026-11-16T12:52:21+00:00",
+ "started_at": "2026-11-16T12:10:27+00:00",
+ "registration_version": "0.3",
+ "collector": {
+  "package_version": "0.3.0",
+  "git_sha": "e407e9d4d113a87e00ed592df8fa8528f0dd08ef",
+  "runner": "github-actions"
+ },
+ "complete": true,
+ "stop_reason": null,
+ "files": {
+  "raw/situations/2026-11-16_relevance.jsonl": "08206c9ca46f54dd863bac0e1fe79af1a63d4ba880d9cb4bb48c274ba59badae",
+  "raw/situations/2026-11-16_recent.jsonl": "3b6266be96df4a0bf4b23ac16b62e02c5a6de2a140ca9baa5fa69671afc12337",
+  "raw/timelines/2026-11-16.jsonl": "b32923d72ab25ede9adacaf6c96ed21e2ec06c1d5a1ce6d98fda782dbb00d1cf",
+  "raw/search/2026-11-16.jsonl": "c33aae50c52b98ae3da534a9b55c1841cea52ed5e92c2a3705567c084dcb1b1f",
+  "raw/errors/2026-11-16.jsonl": "6994332b3497726f645beafa0bf9b5963d5cbd463c9fbd4296fadb762649258c"
+ },
+ "prev_manifest": "2026-11-15.json",
+ "prev_manifest_sha256": "a01175f5bebf31bd40d78a307f4a6e399d7f48fbd46052cb38e336fbc592275c",
+ "quality": {
+  "layer_a": {
+   "pages": {
+    "relevance": 40,
+    "recent": 40
+   },
+   "situations": {
+    "relevance": 1985,
+    "recent": 1987
+   },
+   "ok": {
+    "relevance": true,
+    "recent": true
+   },
+   "cursor_unexhausted": {
+    "relevance": false,
+    "recent": false
+   },
+   "errors": [],
+   "error_classes": {},
+   "n_errors": 0,
+   "census_size": 1987
+  },
+  "layer_b": {
+   "situations_fetched": 1986,
+   "census_size": 1987,
+   "pages": 2005,
+   "clusters_in_window": 2098,
+   "workers": 5,
+   "retired": [
+    "8846a81c-3c8f-444e-a15a-576eff490e65"
+   ],
+   "moved": {},
+   "deferred": [],
+   "errors": [
+    "B/8846a81c-3c8f-444e-a15a-576eff490e65: HTTP 404 from https://clstr.news/cluster/vilnius-police-investigate-theft-and-destruction-of-golden-jesus-figure: {\"error\":{\"code\":\"not_found\",\"message\":\"Unknown API endpoint. See https://clstr.news/developers.\"}}"
+   ],
+   "n_errors": 1,
+   "error_classes": {
+    "404": 1
+   },
+   "stopped_early": false,
+   "n_eligible": 1986,
+   "unfetched": 0,
+   "allowed_failures": 40,
+   "coverage": 1.0,
+   "coverage_ok": true,
+   "invariant_ok": true,
+   "ok": true
+  },
+  "cohort": 1,
+  "layer_c": {
+   "cohort_size": 225,
+   "searched": 225,
+   "successful_searches": 225,
+   "second_pages": 0,
+   "truncated": [],
+   "missing": [],
+   "deferred": [],
+   "workers": 5,
+   "backfill": {
+    "queued": 0,
+    "attempted": 0,
+    "done": [],
+    "missing": []
+   },
+   "errors": [],
+   "n_errors": 0,
+   "error_classes": {},
+   "stop_reason": null,
+   "ok": true
+  },
+  "stop_reason": null,
+  "halted": null,
+  "layers_ok": {
+   "a": true,
+   "b": true,
+   "c": true
+  },
+  "elapsed_seconds": 2514.0,
+  "requests": {
+   "attempts": 2312,
+   "searches": 225,
+   "successful_searches": 225,
+   "rate_limited_429": 0,
+   "backoff_seconds": 0.0,
+   "errors_by_status": {
+    "404": 2
+   }
+  },
+  "quota": {
+   "limit-day": "5000",
+   "limit-minute": "60",
+   "remaining-day": "2696",
+   "seen_at": "2026-11-16T12:52:21+00:00",
+   "limit-search": "250",
+   "remaining-search": "25"
+  }
+ }
+}
